@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   main_mlx_test.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sv <sv@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 13:21:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/03/27 10:49:07 by sv               ###   ########.fr       */
+/*   Updated: 2023/03/27 18:31:14 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include "../includes/mlx/mlx.h"
 
+/*
 int	deal_key(int key, void *param);
 void	ft_putchar(char	c);
 
@@ -38,8 +39,7 @@ void	ft_putchar(char	c)
 {
 	write(1, &c, 1);
 }
-
-/*
+*/
 
 typedef struct s_mlx
 {
@@ -101,49 +101,39 @@ void			texture_init(t_game *game);
 int				reduce_window(t_game *game);
 void			problems(char *nature, char *whole_chars);
 
-void	init_map2(t_game *game, char *whole_chars)
+
+int	main(int argc, char **argv)
 {
-	if ((ft_strchr(whole_chars, 'P') == NULL)
-		|| (ft_strchr(whole_chars, 'E') == NULL)
-		|| (ft_strchr(whole_chars, 'C') == NULL))
-		problems("Error\nMissing one player, one collectible or one exit",
-			whole_chars);
-	if (game->line_number - 1 == game->total_line_char)
-		problems("Error\nMap is square!", whole_chars);
-	check_map_elements(whole_chars);
-	game->map_height = (game->line_number - 1) * 40;
-	game->map_width = game->total_line_char * 40;
-	game->map = malloc(sizeof(char)
-			* (game->total_line_char * game->line_number) + 1);
-	ft_strlcpy(game->map, whole_chars,
-		(game->line_number * game->total_line_char));
-	game->fd = close(game->fd);
-	free(whole_chars);
+	t_game	game;
+
+	check_arg(argc, argv);
+	init_map(&game, argv[1]);
+	init_struc(&game);
+	draw_map(&game);
+	mlx_key_hook(game.mlx.mlx_win, key_hook, &game);
+	mlx_hook(game.mlx.mlx_win, 33, 1L << 5, exit_hook, &game);
+	mlx_hook(game.mlx.mlx_win, 15, 1L << 16, reduce_window, &game);
+	mlx_loop(game.mlx.mlx);
+
+	return (0);
 }
 
-void	deal_ret(int ret, t_game *game, char *line, char *whole_chars)
+void	check_arg(int argc, char **argv)
 {
-	while (ret > 0)
+	if (argc != 2)
 	{
-		game->line_number++;
-		game->endline = ft_strlen(line) - 1;
-		if (line[0] != '1' || line[game->endline] != '1')
-			problems("Error\nWall missing in the border", whole_chars);
-		ft_strcat(whole_chars, line);
-		free(line);
-		line = 0;
-		ret = get_next_line(game->fd, &line);
-		if ((ret != 0) && (strlen(line)
-				!= (long unsigned int)game->total_line_char))
-			problems("Error\nmap has a problem", whole_chars);
-		if (ret == 0)
-		{
-			game->line_number++;
-			check_walls(line);
-			ft_strcat(whole_chars, line);
-			free(line);
-			line = 0;
-		}
+		ft_putendl_fd("Error\nInvalid number of argument", 2);
+		exit(0);
+	}
+	if ((ft_strlen(argv[1]) < 4) || (!ft_strrchr(argv[1], '.')))
+	{
+		ft_putendl_fd("Error\ninvalid argument", 2);
+		exit(0);
+	}
+	if (ft_strcmp(ft_strrchr(argv[1], '.'), ".ber") != 0)
+	{
+		ft_putendl_fd("Error\nfile must be of type \"<name>.ber\"", 2);
+		exit(0);
 	}
 }
 
@@ -168,34 +158,89 @@ int	init_map(t_game *game, char *map_name)
 	return (1);
 }
 
+void	init_map2(t_game *game, char *whole_chars)
+{
+	if ((ft_strchr(whole_chars, 'P') == NULL)
+		|| (ft_strchr(whole_chars, 'E') == NULL)
+		|| (ft_strchr(whole_chars, 'C') == NULL))
+		problems("Error\nMissing one player, one collectible or one exit",
+			whole_chars);
+	if (game->line_number - 1 == game->total_line_char)
+		problems("Error\nMap is square!", whole_chars);
+	check_map_elements(whole_chars);
+	game->map_height = (game->line_number - 1) * 40;
+	game->map_width = game->total_line_char * 40;
+	game->map = malloc(sizeof(char) * (game->total_line_char * game->line_number) + 1);
+	ft_strlcpy(game->map, whole_chars, (game->line_number * game->total_line_char));
+	game->fd = close(game->fd);
+	free(whole_chars);
+}
+
+void	deal_ret(int ret, t_game *game, char *line, char *whole_chars)
+{
+	while (ret > 0)
+	{
+		game->line_number++;
+		game->endline = ft_strlen(line) - 1;
+		if (line[0] != '1' || line[game->endline] != '1')
+			problems("Error\nWall missing in the border", whole_chars);
+		ft_strcat(whole_chars, line);
+		free(line);
+		line = 0;
+		ret = get_next_line(game->fd, &line);
+		if ((ret != 0) && (strlen(line) != (long unsigned int)game->total_line_char))
+			problems("Error\nmap has a problem", whole_chars);
+		if (ret == 0)
+		{
+			game->line_number++;
+			check_walls(line);
+			ft_strcat(whole_chars, line);
+			free(line);
+			line = 0;
+		}
+	}
+}
+
 int	init_struc(t_game *game)
 {
 	game->nb_exit = 0;
 	game->numb_move = 0;
 	game->mlx.mlx = mlx_init();
-	game->mlx.mlx_win = mlx_new_window(game->mlx.mlx,
-			game->map_width, game->map_height, "SO_LONG_EDJ");
-	game->mlx.mlx_img = mlx_new_image
-		(game->mlx.mlx, game->map_width, game->map_height);
+	game->mlx.mlx_win = mlx_new_window(game->mlx.mlx, game->map_width, game->map_height, "SO_LONG_EDJ");
+	game->mlx.mlx_img = mlx_new_image(game->mlx.mlx, game->map_width, game->map_height);
 	texture_init(game);
 	return (1);
 }
 
-int	main(int argc, char **argv)
+// draw map
+void	draw_map(t_game *game)
 {
-	t_game	game;
+	int	z;
 
-	check_arg(argc, argv);
-	init_map(&game, argv[1]);
-	init_struc(&game);
-	draw_map(&game);
-	mlx_key_hook(game.mlx.mlx_win, key_hook, &game);
-	mlx_hook(game.mlx.mlx_win, 33, 1L << 5, exit_hook, &game);
-	mlx_hook(game.mlx.mlx_win, 15, 1L << 16, reduce_window, &game);
-	mlx_loop(game.mlx.mlx);
+	game->numb = 0;
+	game->y = 0;
+	game->x = -40;
+	while (game->y < (game->line_number - 1))
+	{
+		z = 0;
+		while (z < game->total_line_char)
+		{
+			if (game->map[z + game->numb] == '1')
+				draw_square(game, game->tree, game->x += 40, game->y * 39);
+			else
+			{
+				draw_square(game, game->ground, game->x += 40, game->y * 39);
+				check_for_elements(game, game->x, game->y, z);
+			}
+			z++;
+		}
+		game->y++;
+		game->numb = game->total_line_char * game->y;
+	}
+	mlx_put_image_to_window(game->mlx.mlx, game->mlx.mlx_win,
+		game->mlx.mlx_img, 0, 0);
 }
 
-// draw map
 void	draw_square(t_game *game, t_img *img, int x, int y)
 {
 	unsigned int	color;
@@ -225,34 +270,6 @@ void	check_for_elements(t_game *game, int x, int y, int z)
 		draw_square(game, game->collectible, x, y * 39);
 	if (game->map[z + game->numb] == 'E' || game->map[z + game->numb] == 'X')
 		draw_square(game, game->exit, x, y * 39);
-}
-
-void	draw_map(t_game *game)
-{
-	int	z;
-
-	game->numb = 0;
-	game->y = 0;
-	game->x = -40;
-	while (game->y < (game->line_number - 1))
-	{
-		z = 0;
-		while (z < game->total_line_char)
-		{
-			if (game->map[z + game->numb] == '1')
-				draw_square(game, game->tree, game->x += 40, game->y * 39);
-			else
-			{
-				draw_square(game, game->ground, game->x += 40, game->y * 39);
-				check_for_elements(game, game->x, game->y, z);
-			}
-			z++;
-		}
-		game->y++;
-		game->numb = game->total_line_char * game->y;
-	}
-	mlx_put_image_to_window(game->mlx.mlx, game->mlx.mlx_win,
-		game->mlx.mlx_img, 0, 0);
 }
 
 // helpers
@@ -425,13 +442,13 @@ int	key_hook(int keycode, t_game *game)
 	}	
 	if (keycode == 65307)
 		exit_hook(game);
-	if (keycode == 97)
+	if (keycode == 115 || keycode == 65364)
 		move_bottom(game);
-	if (keycode == 119)
+	if (keycode == 119 || keycode == 65362)
 		move_up(game);
-	if (keycode == 100)
+	if (keycode == 100 || keycode == 65363)
 		move_right(game);
-	if (keycode == 115)
+	if (keycode == 97 || keycode == 65361)
 		move_left(game);
 	is_game_finished(game);
 	draw_map(game);
@@ -488,24 +505,3 @@ void	check_map_elements(char *whole_chars)
 	if (count_p > 1)
 		problems("only one player should be on the map", whole_chars);
 }
-
-void	check_arg(int argc, char **argv)
-{
-	if (argc != 2)
-	{
-		ft_putendl_fd("Error\nInvalid number of argument", 2);
-		exit(0);
-	}
-	if ((ft_strlen(argv[1]) < 4) || (!ft_strrchr(argv[1], '.')))
-	{
-		ft_putendl_fd("Error\ninvalid argument", 2);
-		exit(0);
-	}
-	if (ft_strcmp(ft_strrchr(argv[1], '.'), ".ber") != 0)
-	{
-		ft_putendl_fd("Error\nfile must be of type \"<name>.ber\"", 2);
-		exit(0);
-	}
-}
-
-*/

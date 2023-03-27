@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 13:21:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/03/24 14:58:14 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/03/27 17:44:48 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,11 @@ int	main(int ac, char **av)
 	win_ptr = mlx_new_window(mlx_ptr, TILE_SIZE * MAP_HEIGHT, TILE_SIZE * MAP_WIDTH, "Game");
 	mlx_hook(win_ptr, 2, 0, handle_input, NULL);
 	mlx_loop_hook(mlx_ptr, draw_map, mlx_ptr);
-	// The following will allow to handle events
-	mlx_loop(mlx_ptr);
+
+	// The following loop allows to process 'events'
+	//mlx_loop(mlx_ptr);
+
+	return (0);
 }
 
 void	load_map(char *filename)

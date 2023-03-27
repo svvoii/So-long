@@ -6,7 +6,7 @@
 #    By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/02/17 17:40:09 by sbocanci          #+#    #+#              #
-#    Updated: 2023/03/24 14:53:14 by sbocanci         ###   ########.fr        #
+#    Updated: 2023/03/27 16:27:48 by sbocanci         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,6 +28,7 @@ obj = $(sources:.c=.o)
 flags =#-Wall -Wextra -Werror
 
 Lmlx = -L/mnt/nfs/homes/sbocanci/Documents/42cursus/So-long/so_long/includes/mlx/ -lmlx -lXext -lX11
+#frame = -framework OpenGL -framework AppKit
 
 all: $(NAME)
 
