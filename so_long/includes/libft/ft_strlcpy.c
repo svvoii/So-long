@@ -1,23 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   so_long.h                                          :+:      :+:    :+:   */
+/*   ft_strlcpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/24 11:24:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/03/28 16:27:56 by sbocanci         ###   ########.fr       */
+/*   Created: 2022/11/07 14:29:45 by sbocanci          #+#    #+#             */
+/*   Updated: 2023/03/28 12:03:02 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SO_LONG_H
-# define SO_LONG_H
+#include "../libft.h"
 
-# include <stdio.h>
-# include "libft.h"
-# include "../includes/mlx/mlx.h"
-# include "../includes/mlx/mlx_int.h"
+size_t	ft_strlcpy(char *dst, const char *src, size_t size)
+{
+	size_t	i;
+	size_t	len_src;
 
-# define PIX 32
-
-#endif
+	len_src = ft_strlen(src);
+	if (size < 1)
+		return (len_src);
+	i = 0;
+	while (src[i] && i < size - 1)
+	{
+		dst[i] = src[i];
+		i++;
+	}
+	dst[i] = '\0';
+	return (len_src);
+}

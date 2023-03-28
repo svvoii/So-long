@@ -1,23 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   so_long.h                                          :+:      :+:    :+:   */
+/*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/24 11:24:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/03/28 16:27:56 by sbocanci         ###   ########.fr       */
+/*   Created: 2022/11/07 14:29:45 by sbocanci          #+#    #+#             */
+/*   Updated: 2023/03/28 11:33:48 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SO_LONG_H
-# define SO_LONG_H
+#include "../libft.h"
 
-# include <stdio.h>
-# include "libft.h"
-# include "../includes/mlx/mlx.h"
-# include "../includes/mlx/mlx_int.h"
+char	*ft_strdup(const char *s)
+{
+	size_t		i;
+	size_t		s_len;
+	char		*dup;
 
-# define PIX 32
-
-#endif
+	s_len = ft_strlen((char *)s);
+	dup = malloc(s_len + 1);
+	if (!dup)
+		return (NULL);
+	i = 0;
+	while (i < s_len)
+	{
+		dup[i] = s[i];
+		i++;
+	}
+	dup[i] = '\0';
+	return (dup);
+}

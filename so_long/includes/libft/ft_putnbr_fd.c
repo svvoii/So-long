@@ -1,23 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   so_long.h                                          :+:      :+:    :+:   */
+/*   ft_putnbr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/24 11:24:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/03/28 16:27:56 by sbocanci         ###   ########.fr       */
+/*   Created: 2022/11/22 14:22:55 by sbocanci          #+#    #+#             */
+/*   Updated: 2023/03/28 14:25:24 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SO_LONG_H
-# define SO_LONG_H
+#include "../libft.h"
 
-# include <stdio.h>
-# include "libft.h"
-# include "../includes/mlx/mlx.h"
-# include "../includes/mlx/mlx_int.h"
+void	ft_putnbr_fd(int n, int fd)
+{
+	long long	nb;
 
-# define PIX 32
-
-#endif
+	nb = n;
+	if (nb < 0)
+	{
+		nb *= -1;
+		ft_putchar_fd('-', fd);
+	}
+	if (nb > 9)
+	{
+		ft_putnbr_fd(nb / 10, fd);
+		ft_putnbr_fd(nb % 10, fd);
+	}
+	else
+		ft_putchar_fd(nb + 48, fd);
+}

@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 15:32:22 by sbocanci          #+#    #+#             */
-/*   Updated: 2022/11/28 19:39:18 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/03/28 14:23:12 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,15 @@
 # include <stdlib.h>
 # include <unistd.h>
 
+# define GNL_BUF_SIZE 1024
+
 typedef struct s_list
 {
 	void			*content;
 	struct s_list	*next;
 }	t_list;
 
+void	ft_strcat(char *dst, const char *src);
 int		ft_atoi(const char *str);
 void	ft_bzero(void *s, size_t n);
 void	*ft_calloc(size_t nmemb, size_t size);
@@ -66,5 +69,6 @@ char	*ft_strrchr(const char *s, int c);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 int		ft_tolower(int c);
 int		ft_toupper(int c);
+int		get_next_line(int fd, char **line);
 
 #endif

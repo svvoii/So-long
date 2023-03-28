@@ -1,23 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   so_long.h                                          :+:      :+:    :+:   */
+/*   ft_strcat.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/24 11:24:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/03/28 16:27:56 by sbocanci         ###   ########.fr       */
+/*   Created: 2022/11/07 14:29:45 by sbocanci          #+#    #+#             */
+/*   Updated: 2023/03/28 12:01:15 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SO_LONG_H
-# define SO_LONG_H
+#include "../libft.h"
 
-# include <stdio.h>
-# include "libft.h"
-# include "../includes/mlx/mlx.h"
-# include "../includes/mlx/mlx_int.h"
-
-# define PIX 32
-
-#endif
+void	ft_strcat(char *dst, const char *src)
+{
+	while (*dst)
+		dst++;
+	while (*src)
+	{
+		*dst = *src;
+		dst++;
+		src++;
+	}
+	*dst = '\0';
+}

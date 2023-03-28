@@ -1,23 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   so_long.h                                          :+:      :+:    :+:   */
+/*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/24 11:24:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/03/28 16:27:56 by sbocanci         ###   ########.fr       */
+/*   Created: 2022/11/07 14:29:45 by sbocanci          #+#    #+#             */
+/*   Updated: 2023/03/28 11:33:34 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SO_LONG_H
-# define SO_LONG_H
+#include "../libft.h"
 
-# include <stdio.h>
-# include "libft.h"
-# include "../includes/mlx/mlx.h"
-# include "../includes/mlx/mlx_int.h"
+char	*ft_strjoin(char const *s1, char const *s2)
+{
+	char	*s3;
+	char	*tmp;
 
-# define PIX 32
-
-#endif
+	if (!s1 || !s2)
+		return (NULL);
+	s3 = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
+	if (!s3)
+		return (NULL);
+	tmp = s3;
+	while (*s1 != '\0')
+		*tmp++ = *s1++;
+	while (*s2 != '\0')
+		*tmp++ = *s2++;
+	*tmp = '\0';
+	return (s3);
+}
