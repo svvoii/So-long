@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main_mlx_test.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sv <sv@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 13:21:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/03/30 10:29:26 by sv               ###   ########.fr       */
+/*   Updated: 2023/03/30 13:34:54 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
+//#include <unistd.h>
 #include "../includes/so_long.h"
 //#include "../includes/mlx/mlx.h"
 //#include "../includes/mlx/mlx_init.h"

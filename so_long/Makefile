@@ -6,7 +6,7 @@
 #    By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/02/17 17:40:09 by sbocanci          #+#    #+#              #
-#    Updated: 2023/03/28 14:31:07 by sbocanci         ###   ########.fr        #
+#    Updated: 2023/03/30 13:40:26 by sbocanci         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,8 +18,8 @@ libft = includes/libft/ft_putstr_fd.c includes/libft/ft_strlen.c includes/libft/
 	includes/libft/ft_putnbr_fd.c includes/libft/ft_strrchr.c includes/libft/ft_putchar_fd.c \
 	includes/libft/get_next_line.c
 
-src = sources/main_mlx_test.c
-#src = sources/main.c
+#src = sources/main_mlx_test.c
+src = sources/main.c
 
 #src_b = bonus/checker.c bonus/execute.c bonus/get_next_line.c\
 	sources/push_swap.c sources/stack.c sources/stack_instructions.c
