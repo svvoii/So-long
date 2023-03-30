@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_mlx_test.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sv <sv@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 13:21:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/03/28 17:33:22 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/03/30 10:29:26 by sv               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,8 +176,8 @@ void	ft_map_elements(t_game *game, char *map_buff)
 	if (game->line_number - 1 == game->total_line_char)
 		ft_error("Error\nMap is square!\n", map_buff);
 	ft_check_map_elements(map_buff);
-	game->map_height = (game->line_number - 1) * PIX + 1;
-	game->map_width = game->total_line_char * PIX + 1;
+	game->map_height = (game->line_number - 1) * PIX;
+	game->map_width = game->total_line_char * PIX;
 	game->map = malloc(sizeof(char) * (game->total_line_char * game->line_number) + 1);
 	ft_strlcpy(game->map, map_buff, (game->line_number * game->total_line_char));
 	game->fd = close(game->fd);
@@ -214,7 +214,7 @@ int	ft_init_struc(t_game *game)
 	game->nb_exit = 0;
 	game->numb_move = 0;
 	game->mlx.mlx = mlx_init();
-	game->mlx.mlx_win = mlx_new_window(game->mlx.mlx, game->map_width, game->map_height, "SO_LONG_EDJ");
+	game->mlx.mlx_win = mlx_new_window(game->mlx.mlx, game->map_width, game->map_height, "Game");
 	game->mlx.mlx_img = mlx_new_image(game->mlx.mlx, game->map_width, game->map_height);
 	ft_init_textures(game);
 	return (1);
@@ -227,17 +227,17 @@ void	ft_render_map(t_game *game)
 
 	game->numb = 0;
 	game->y = 0;
-	game->x = -PIX + 1;
+	game->x = -PIX;
 	while (game->y < (game->line_number - 1))
 	{
 		z = 0;
 		while (z < game->total_line_char)
 		{
 			if (game->map[z + game->numb] == '1')
-				ft_draw_square(game, game->wall, game->x += PIX + 1, game->y * PIX);
+				ft_draw_square(game, game->wall, game->x += PIX, game->y * (PIX - 1));
 			else
 			{
-				ft_draw_square(game, game->ground, game->x += PIX + 1, game->y * PIX);
+				ft_draw_square(game, game->ground, game->x += PIX, game->y * (PIX - 1));
 				ft_identify_elements(game, game->x, game->y, z);
 			}
 			z++;
@@ -256,10 +256,10 @@ void	ft_draw_square(t_game *game, t_img *img, int x, int y)
 	int				j;
 
 	j = 0;
-	while (j < PIX + 1)
+	while (j < PIX)
 	{
 		i = 0;
-		while (i < PIX + 1)
+		while (i < PIX)
 		{
 			color = ft_get_pixel_mlx(img, i, j);
 			if (color != ft_rgbtoi_mlx(0, 255, 255, 255))
@@ -273,12 +273,12 @@ void	ft_draw_square(t_game *game, t_img *img, int x, int y)
 void	ft_identify_elements(t_game *game, int x, int y, int z)
 {
 	if (game->map[z + game->numb] == 'P' || game->map[z + game->numb] == 'p')
-		ft_draw_square(game, game->player, x, y * PIX);
+		ft_draw_square(game, game->player, x, y * (PIX - 1));
 	if (game->map[z + game->numb] == 'C' || game->map[z + game->numb] == 'c')
-		ft_draw_square(game, game->collectible, x, y * PIX);
+		ft_draw_square(game, game->collectible, x, y * (PIX - 1));
 	if (game->map[z + game->numb] == 'E' || game->map[z + game->numb] == 'e' 
 		|| game->map[z + game->numb] == 'X')
-		ft_draw_square(game, game->exit, x, y * PIX);
+		ft_draw_square(game, game->exit, x, y * (PIX - 1));
 }
 
 // helpers
