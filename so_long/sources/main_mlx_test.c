@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 13:21:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/03/30 13:34:54 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/03/31 18:31:54 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,10 +234,10 @@ void	ft_render_map(t_game *game)
 		while (z < game->total_line_char)
 		{
 			if (game->map[z + game->numb] == '1')
-				ft_draw_square(game, game->wall, game->x += PIX, game->y * (PIX - 1));
+				ft_draw_square(game, game->wall, game->x += PIX, game->y * PIX);
 			else
 			{
-				ft_draw_square(game, game->ground, game->x += PIX, game->y * (PIX - 1));
+				ft_draw_square(game, game->ground, game->x += PIX, game->y * PIX);
 				ft_identify_elements(game, game->x, game->y, z);
 			}
 			z++;
@@ -296,11 +296,11 @@ void	ft_texture_load(t_game *game, t_img **img, char *path)
 
 void	ft_init_textures(t_game *game)
 {
-	ft_texture_load(game, &game->player, "../xpm/player.xpm");
-	ft_texture_load(game, &game->exit, "../xpm/exit.xpm");
-	ft_texture_load(game, &game->collectible, "../xpm/collectable.xpm");
-	ft_texture_load(game, &game->wall, "../xpm/wall.xpm");
-	ft_texture_load(game, &game->ground, "../xpm/ground.xpm");
+	ft_texture_load(game, &game->player, "./xpm/1player.xpm");
+	ft_texture_load(game, &game->exit, "./xpm/1exit.xpm");
+	ft_texture_load(game, &game->collectible, "./xpm/1collectable.xpm");
+	ft_texture_load(game, &game->wall, "./xpm/1wall.xpm");
+	ft_texture_load(game, &game->ground, "./xpm/1ground.xpm");
 	/*
 	ft_texture_load(game, &game->player, "./img/link1.xpm");
 	ft_texture_load(game, &game->exit, "./img/tent.xpm");
@@ -353,7 +353,7 @@ void	ft_down(t_game *game)
 		write(1, "\n", 1);
 	}
 	mlx_destroy_image(game->mlx.mlx, game->player);
-	ft_texture_load(game, &game->player, "../xpm/player.xpm");
+	ft_texture_load(game, &game->player, "./xpm/1player.xpm");
 }
 
 void	ft_up(t_game *game)
@@ -379,7 +379,7 @@ void	ft_up(t_game *game)
 		write(1, "\n", 1);
 	}
 	mlx_destroy_image(game->mlx.mlx, game->player);
-	ft_texture_load(game, &game->player, "../xpm/player.xpm");
+	ft_texture_load(game, &game->player, "./xpm/1player.xpm");
 }
 
 void	ft_right(t_game *game)
@@ -399,7 +399,7 @@ void	ft_right(t_game *game)
 		write(1, "\n", 1);
 	}
 	mlx_destroy_image(game->mlx.mlx, game->player);
-	ft_texture_load(game, &game->player, "../xpm/player.xpm");
+	ft_texture_load(game, &game->player, "./xpm/1player.xpm");
 }
 
 void	ft_left(t_game *game)
@@ -419,7 +419,7 @@ void	ft_left(t_game *game)
 		write(1, "\n", 1);
 	}
 	mlx_destroy_image(game->mlx.mlx, game->player);
-	ft_texture_load(game, &game->player, "../xpm/player.xpm");
+	ft_texture_load(game, &game->player, "./xpm/1player.xpm");
 }
 
 // keys
