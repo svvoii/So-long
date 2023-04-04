@@ -35,16 +35,18 @@ void	*ft_map_to_array(t_map *m, char *file_path)
 		tmp = (int)ft_strlen(m->map[i]);
 		if (tmp != m->width)
 		{
-			// trow map error, free and exit
+			// throw map error, free and exit
 		}
 	}
 	m->height = i;
 	m->tile = PIX;
 
+/*
 	printf("%s\n", m->raw);
 	i = -1;
 	while (m->map[++i])
 		printf("'%s'\t'%d'\twidth:'%d'\theight:'%d'\n", m->map[i], i, m->width, m->height);
+*/
 }
 
 char	*ft_copy_to_buf(int fd)

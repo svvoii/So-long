@@ -13,19 +13,11 @@
 #include "../includes/so_long.h"
 //#include "../includes/mlx/mlx.h"
 
-//#define MAP_WIDTH 8 // x
-//#define MAP_HEIGHT 4 // y
-#define MAP_WIDTH 20 // x
-#define MAP_HEIGHT 15 // y
-
-// using MAX_HEIGHT + 1 because the drawing of the top row wont show in the game window
-char	map[MAP_HEIGHT][MAP_WIDTH] = {0};
-
 //void	load_map(char *filename);
 //int		ft_fgetc(FILE *stream);
 int		draw_map(t_mlx *ptrs);
 void	ft_file_to_image(t_mlx *ptrs, char *xpm_path, int w_tile, int h_tile);
-void	ft_init_game_elements(t_game *game, t_map *m);
+void	ft_init_game_elements(t_game *game);
 int		handle_input(int key, t_game *game);
 
 int	main(int ac, char **av)
@@ -37,11 +29,18 @@ int	main(int ac, char **av)
 	if (ac != 2)
 		return(0);
 	game.ptr = &ptrs;
-	//load_map(av[ac - 1]);
+	game.m = &m;
+	ptrs.m = &m;
 	ft_map_to_array(&m, av[ac - 1]);
+
+	printf("%s\n", ptrs.m->raw);
+	int i = -1;
+	while (ptrs.m->map[++i])
+		printf("'%s'\t'%d'\twidth:'%d'\theight:'%d'\ttile:'%d'\n", ptrs.m->map[i], i, ptrs.m->width, ptrs.m->height, ptrs.m->tile);
+
 	ptrs.mlx = mlx_init();
 	ptrs.win = mlx_new_window(ptrs.mlx, (m.tile * m.width), (m.tile * m.height), "Game");
-	ft_init_game_elements(&game, &m);
+	ft_init_game_elements(&game);
 	mlx_hook(ptrs.win, KeyPress, KeyPressMask, handle_input, &game);
 	mlx_loop_hook(ptrs.mlx, draw_map, &ptrs);
 	// The following loop allows to process 'events'
@@ -54,28 +53,71 @@ int	main(int ac, char **av)
 	return (0);
 }
 
-void	ft_init_game_elements(t_game *game, t_map *m)
+void	ft_init_game_elements(t_game *game)
 {
 	int	h;
 	int	w;
 
 	h = -1;
-	while (++h < m->height)
+	while (++h < game->m->height)
 	{
 		w = -1;
-		while (++w < m->width)
+		while (++w < game->m->width)
 		{
-			if (map[h][w] == 'p')
+			if (game->m->map[h][w] == 'p')
 			{
 				game->p_y = h;
 				game->p_x = w;
 			}
-			if (map[h][w] == 'c')
+			if (game->m->map[h][w] == 'c')
 				game->c_count++;
 		}
 	}
 }
 
+int	draw_map(t_mlx *ptrs)
+{
+	static void	*buffer = NULL;
+	static int	buffer_width = 0;
+	static int	buffer_height = 0;
+
+	if (!buffer)
+	{
+		buffer_width = ptrs->m->width * ptrs->m->tile;
+		buffer_height = ptrs->m->height * ptrs->m->tile;
+		buffer = mlx_new_image(ptrs->mlx, buffer_width, buffer_height);
+	}
+	mlx_put_image_to_image(ptrs->mlx, buffer, 0, 0, ptrs->img, 0, 0);
+
+	int	h;
+	int	w;
+	int	w_tile;
+	int	h_tile;
+
+	h = -1;
+	while (++h < ptrs->m->height)
+	{
+		w = -1;
+		while (++w < ptrs->m->width)
+		{
+			w_tile = w * ptrs->m->tile;
+			h_tile = h * ptrs->m->tile;
+			if (ptrs->m->map[h][w] == '1')
+				ft_file_to_image(ptrs, "./xpm/1wall.xpm", w_tile, h_tile);
+			else if (ptrs->m->map[h][w] == '0')
+				ft_file_to_image(ptrs, "./xpm/1ground.xpm", w_tile, h_tile);
+			else if (ptrs->m->map[h][w] == 'p')
+				ft_file_to_image(ptrs, "./xpm/1player.xpm", w_tile, h_tile);
+			else if (ptrs->m->map[h][w] == 'c')
+				ft_file_to_image(ptrs, "./xpm/1collectable.xpm", w_tile, h_tile);
+			else if (ptrs->m->map[h][w] == 'e')
+				ft_file_to_image(ptrs, "./xpm/1exit.xpm", w_tile, h_tile);
+		}
+	}
+	mlx_put_image_to_window(ptrs->mlx, ptrs->win, buffer, 0, 0);
+	return (0);
+}
+/*
 int	draw_map(t_mlx *ptrs)
 {
 	int	h;
@@ -91,21 +133,21 @@ int	draw_map(t_mlx *ptrs)
 		{
 			w_tile = w * ptrs->m->tile;
 			h_tile = h * ptrs->m->tile;
-			if (map[h][w] == '1')
+			if (ptrs->m->map[h][w] == '1')
 				ft_file_to_image(ptrs, "./xpm/1wall.xpm", w_tile, h_tile);
-			else if (map[h][w] == '0')
+			else if (ptrs->m->map[h][w] == '0')
 				ft_file_to_image(ptrs, "./xpm/1ground.xpm", w_tile, h_tile);
-			else if (map[h][w] == 'p')
+			else if (ptrs->m->map[h][w] == 'p')
 				ft_file_to_image(ptrs, "./xpm/1player.xpm", w_tile, h_tile);
-			else if (map[h][w] == 'c')
+			else if (ptrs->m->map[h][w] == 'c')
 				ft_file_to_image(ptrs, "./xpm/1collectable.xpm", w_tile, h_tile);
-			else if (map[h][w] == 'e')
+			else if (ptrs->m->map[h][w] == 'e')
 				ft_file_to_image(ptrs, "./xpm/1exit.xpm", w_tile, h_tile);
 		}
 	}
 	return (0);
 }
-
+*/
 void	ft_file_to_image(t_mlx *ptrs, char *xpm_path, int w_tile, int h_tile)
 {
 	void	*img_ptr;
@@ -140,16 +182,16 @@ int	handle_input(int key, t_game *game)
 		new_x--;
 	else if (key == 65363 || key == 100) /* right */
 		new_x++;
-	if (new_x >= 0 && new_x < game->m->width && new_y >= 0 && new_y < game->m->height && map[new_y][new_x] != '1')
+	if (new_x >= 0 && new_x < game->m->width && new_y >= 0 && new_y < game->m->height && game->m->map[new_y][new_x] != '1')
 	{
-		map[game->p_y][game->p_x] = '0';
+		game->m->map[game->p_y][game->p_x] = '0';
 		game->p_x = new_x;
 		game->p_y = new_y;
-		if (map[new_y][new_x] == 'c')
-			map[new_y][new_x] = '0';
-		else if (map[new_y][new_x] == 'e')
+		if (game->m->map[new_y][new_x] == 'c')
+			game->m->map[new_y][new_x] = '0';
+		else if (game->m->map[new_y][new_x] == 'e')
 			exit(0);
-		map[game->p_y][game->p_x] = 'p';
+		game->m->map[game->p_y][game->p_x] = 'p';
 		//mlx_clear_window(game->ptr->mlx, game->ptr->win);
 		//draw_map(game->ptr);
 	}
