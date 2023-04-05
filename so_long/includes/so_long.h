@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 11:24:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/04/03 18:55:18 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/04/05 16:53:08 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,21 @@ typedef struct s_map
 	int		tile;
 }	t_map;
 
+typedef struct s_textures
+{
+	void	*wall;
+	void	*path;
+	void	*player;
+	void	*collectable;
+	void	*exit;
+}	t_textures;
+
 typedef struct s_mlx_ptr
 {
-	void	*mlx;
-	void	*win;
-	t_map	*m;
+	void		*mlx;
+	void		*win;
+	t_map		*m;
+	t_textures	*t;
 }	t_mlx;
 
 typedef struct s_game
@@ -48,6 +58,6 @@ typedef struct s_game
 /* main.c */
 
 /* ft_map */
-void	*ft_map_to_array(t_map *m, char *file_path);
+void	ft_map_to_array(t_map *m, char *file_path);
 
 #endif

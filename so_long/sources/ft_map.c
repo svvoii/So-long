@@ -16,7 +16,7 @@
 
 char	*ft_copy_to_buf(int fd);
 
-void	*ft_map_to_array(t_map *m, char *file_path)
+void	ft_map_to_array(t_map *m, char *file_path)
 {
 	int		fd;
 	int		i;
@@ -24,7 +24,7 @@ void	*ft_map_to_array(t_map *m, char *file_path)
 
 	fd = open(file_path, O_RDONLY);
 	if (fd == -1)
-		return (NULL);
+		return;
 	m->raw = ft_copy_to_buf(fd);
 	close(fd);
 	m->map = ft_split(m->raw, '\n');
@@ -40,7 +40,6 @@ void	*ft_map_to_array(t_map *m, char *file_path)
 	}
 	m->height = i;
 	m->tile = PIX;
-
 /*
 	printf("%s\n", m->raw);
 	i = -1;

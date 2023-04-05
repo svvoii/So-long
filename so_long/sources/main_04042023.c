@@ -10,34 +10,64 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/so_long.h"
+//#include "../includes/so_long.h"
 //#include "../includes/mlx/mlx.h"
 
-//void	load_map(char *filename);
-//int		ft_fgetc(FILE *stream);
-void	ft_load_textures(t_mlx *ptr);
+#include <stdio.h>
+#include "../includes/libft.h"
+#include "../includes/mlx/mlx.h"
+#include "../includes/mlx/mlx_int.h"
+
+#define BUFF_SIZE 1024
+#define PIX 32
+
+typedef struct s_map
+{
+	char	*raw;
+	char	**map;
+	int		height;
+	int		width;
+	int		tile;
+}	t_map;
+
+typedef struct s_mlx_ptr
+{
+	void	*mlx;
+	void	*win;
+	void	*img;
+	t_map	*m;
+}	t_mlx;
+
+typedef struct s_game
+{
+	t_mlx	*ptr;
+	t_map	*m;
+	int		c_count;
+	int		p_x;
+	int		p_y;
+}	t_game;
+
+void	*ft_map_to_array(t_map *m, char *file_path);
+char	*ft_copy_to_buf(int fd);
 int		draw_map(t_mlx *ptrs);
-void	ft_free_textures(t_mlx *ptrs);
+void	ft_file_to_image(t_mlx *ptrs, char *xpm_path, int w_tile, int h_tile);
 void	ft_init_game_elements(t_game *game);
 int		handle_input(int key, t_game *game);
-void	ft_free_map(t_map *m);
 
 int	main(int ac, char **av)
 {
-	t_mlx		ptrs;
-	t_game		game;
-	t_map		m;
-	t_textures	tiles;
+	t_mlx	ptrs;
+	t_game	game;
+	t_map	m;
 
 	if (ac != 2)
 		return(0);
 	game.ptr = &ptrs;
 	game.m = &m;
 	ptrs.m = &m;
-	ptrs.t = &tiles;
 	ft_map_to_array(&m, av[ac - 1]);
 
-	//printf("%s\n", ptrs.m->raw);
+	printf("%s\n", ptrs.m->raw);
 	int i = -1;
 	while (ptrs.m->map[++i])
 		printf("'%s'\t'%d'\twidth:'%d'\theight:'%d'\ttile:'%d'\n", ptrs.m->map[i], i, ptrs.m->width, ptrs.m->height, ptrs.m->tile);
@@ -45,22 +75,66 @@ int	main(int ac, char **av)
 	ptrs.mlx = mlx_init();
 	ptrs.win = mlx_new_window(ptrs.mlx, (m.tile * m.width), (m.tile * m.height), "Game");
 	ft_init_game_elements(&game);
-
-	printf("w:'%p'\tg:'%p'\tp:'%p'\tc:'%p'\te:'%p'\n", tiles.wall, tiles.path, tiles.player, tiles.collectable, tiles.exit);
-	ft_load_textures(&ptrs);
-	printf("w:'%p'\tg:'%p'\tp:'%p'\tc:'%p'\te:'%p'\n", tiles.wall, tiles.path, tiles.player, tiles.collectable, tiles.exit);
-
 	mlx_hook(ptrs.win, KeyPress, KeyPressMask, handle_input, &game);
 	mlx_loop_hook(ptrs.mlx, draw_map, &ptrs);
 	mlx_loop(ptrs.mlx);
 
-	//ft_free_textures(&ptrs);
-	//mlx_destroy_window(ptrs.mlx, ptrs.win);
-	//mlx_destroy_display(ptrs.mlx);
-	//free(ptrs.mlx);
-	ft_free_map(&m);
+	mlx_destroy_window(ptrs.mlx, ptrs.win);
+	mlx_destroy_display(ptrs.mlx);
+	free(ptrs.mlx);
 
 	return (0);
+}
+
+void	*ft_map_to_array(t_map *m, char *file_path)
+{
+	int		fd;
+	int		i;
+	int		tmp;
+
+	fd = open(file_path, O_RDONLY);
+	if (fd == -1)
+		return (NULL);
+	m->raw = ft_copy_to_buf(fd);
+	close(fd);
+	m->map = ft_split(m->raw, '\n');
+	i = 0;
+	m->width = (int)ft_strlen(m->map[i]);
+	while (m->map[++i])
+	{
+		tmp = (int)ft_strlen(m->map[i]);
+		if (tmp != m->width)
+		{
+			// throw map error, free and exit
+		}
+	}
+	m->height = i;
+	m->tile = PIX;
+}
+
+char	*ft_copy_to_buf(int fd)
+{
+	char	buff[BUFF_SIZE + 1];
+	char 	*map_str;
+	char	*tmp;
+	ssize_t	ret;
+
+	map_str = ft_strdup("");
+	ret = 1;
+	while (ret > 0)
+	{
+		ret = read(fd, buff, BUFF_SIZE);
+		buff[ret] = '\0';
+		tmp = ft_strjoin(map_str, buff);
+		free(map_str);
+		map_str = tmp;
+	}
+	if (ret == -1)
+	{
+		free(map_str);
+		return (NULL);
+	}
+	return(map_str);
 }
 
 void	ft_init_game_elements(t_game *game)
@@ -85,32 +159,13 @@ void	ft_init_game_elements(t_game *game)
 	}
 }
 
-void	ft_load_textures(t_mlx *ptr)
-{
-	ptr->t->wall = mlx_xpm_file_to_image(ptr->mlx, "./xpm/1wall.xpm", &ptr->m->tile, &ptr->m->tile);
-	ptr->t->path = mlx_xpm_file_to_image(ptr->mlx, "./xpm/1ground.xpm", &ptr->m->tile, &ptr->m->tile);
-	ptr->t->player = mlx_xpm_file_to_image(ptr->mlx, "./xpm/1player.xpm", &ptr->m->tile, &ptr->m->tile);
-	ptr->t->collectable = mlx_xpm_file_to_image(ptr->mlx, "./xpm/1collectable.xpm", &ptr->m->tile, &ptr->m->tile);
-	ptr->t->exit = mlx_xpm_file_to_image(ptr->mlx, "./xpm/1exit.xpm", &ptr->m->tile, &ptr->m->tile);
-}
-
-void	ft_free_textures(t_mlx *ptrs)
-{
-	mlx_destroy_image(ptrs->mlx, ptrs->t->wall);
-	mlx_destroy_image(ptrs->mlx, ptrs->t->path);
-	mlx_destroy_image(ptrs->mlx, ptrs->t->player);
-	mlx_destroy_image(ptrs->mlx, ptrs->t->collectable);
-	mlx_destroy_image(ptrs->mlx, ptrs->t->exit);
-}
-
 int	draw_map(t_mlx *ptrs)
 {
-	int			h;
-	int			w;
-	int			w_tile;
-	int			h_tile;
+	int	h;
+	int	w;
+	int	w_tile;
+	int	h_tile;
 
-	//printf("w:'%p'\tg:'%p'\tp:'%p'\tc:'%p'\te:'%p'\n", ptrs->t->wall, ptrs->t->path, ptrs->t->player, ptrs->t->collectable, ptrs->t->exit);
 	h = -1;
 	while (++h < ptrs->m->height)
 	{
@@ -120,19 +175,34 @@ int	draw_map(t_mlx *ptrs)
 			w_tile = w * ptrs->m->tile;
 			h_tile = h * ptrs->m->tile;
 			if (ptrs->m->map[h][w] == '1')
-				mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->t->wall, w_tile, h_tile);
+				ft_file_to_image(ptrs, "./xpm/1wall.xpm", w_tile, h_tile);
 			else if (ptrs->m->map[h][w] == '0')
-				mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->t->path, w_tile, h_tile);
+				ft_file_to_image(ptrs, "./xpm/1ground.xpm", w_tile, h_tile);
 			else if (ptrs->m->map[h][w] == 'p')
-				mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->t->player, w_tile, h_tile);
+				ft_file_to_image(ptrs, "./xpm/1player.xpm", w_tile, h_tile);
 			else if (ptrs->m->map[h][w] == 'c')
-				mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->t->collectable, w_tile, h_tile);
+				ft_file_to_image(ptrs, "./xpm/1collectable.xpm", w_tile, h_tile);
 			else if (ptrs->m->map[h][w] == 'e')
-				mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->t->exit, w_tile, h_tile);
+				ft_file_to_image(ptrs, "./xpm/1exit.xpm", w_tile, h_tile);
 		}
 	}
-	//ft_free_textures(ptrs);
 	return (0);
+}
+
+void	ft_file_to_image(t_mlx *ptrs, char *xpm_path, int w_tile, int h_tile)
+{
+	void	*img_ptr;
+	int		img_width = 0;
+	int		img_height = 0;
+
+	img_ptr = mlx_xpm_file_to_image(ptrs->mlx, xpm_path, &img_width, &img_height);
+	if (img_ptr == NULL)
+	{
+		ft_putstr_fd("Error: Could not load .xpm file\n", 2);
+		exit(EXIT_FAILURE);
+	}
+	mlx_put_image_to_window(ptrs->mlx, ptrs->win, img_ptr, w_tile, h_tile);
+	free(img_ptr);
 }
 
 int	handle_input(int key, t_game *game)
@@ -167,17 +237,4 @@ int	handle_input(int key, t_game *game)
 		//draw_map(game->ptr);
 	}
 	return (0);
-}
-
-void	ft_free_map(t_map *m)
-{
-	int	i;
-
-	free(m->raw);
-	i = -1;
-	while (m->map[++i])
-		free(m->map[i]);
-	free(m->map[i]);
-	m->raw = NULL;
-	m->map = NULL;
 }
