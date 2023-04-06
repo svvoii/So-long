@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+         #
+#    By: sv <sv@student.42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/02/17 17:40:09 by sbocanci          #+#    #+#              #
-#    Updated: 2023/04/05 17:16:34 by sbocanci         ###   ########.fr        #
+#    Updated: 2023/04/06 09:51:50 by sv               ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,8 +19,8 @@ libft = includes/libft/ft_putstr_fd.c includes/libft/ft_strlen.c includes/libft/
 	includes/libft/ft_split.c
 
 #src = sources/main_04042023.c
-src = sources/main_05042023.c
-#src = sources/main.c sources/ft_map.c
+#src = sources/main_05042023.c
+src = sources/main.c sources/ft_map.c
 
 #src_b = bonus/checker.c bonus/execute.c bonus/get_next_line.c\
 	sources/push_swap.c sources/stack.c sources/stack_instructions.c

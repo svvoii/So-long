@@ -11,15 +11,13 @@
 /* ************************************************************************** */
 
 #include "../includes/so_long.h"
-//#include "../includes/mlx/mlx.h"
 
-//void	load_map(char *filename);
-//int		ft_fgetc(FILE *stream);
 void	ft_load_textures(t_mlx *ptr);
 int		draw_map(t_mlx *ptrs);
 void	ft_free_textures(t_mlx *ptrs);
 void	ft_init_game_elements(t_game *game);
 int		handle_input(int key, t_game *game);
+void	ft_free_and_destroy(t_mlx *ptrs, int status);
 void	ft_free_map(t_map *m);
 
 int	main(int ac, char **av)
@@ -37,7 +35,6 @@ int	main(int ac, char **av)
 	ptrs.t = &tiles;
 	ft_map_to_array(&m, av[ac - 1]);
 
-	//printf("%s\n", ptrs.m->raw);
 	int i = -1;
 	while (ptrs.m->map[++i])
 		printf("'%s'\t'%d'\twidth:'%d'\theight:'%d'\ttile:'%d'\n", ptrs.m->map[i], i, ptrs.m->width, ptrs.m->height, ptrs.m->tile);
@@ -46,7 +43,6 @@ int	main(int ac, char **av)
 	ptrs.win = mlx_new_window(ptrs.mlx, (m.tile * m.width), (m.tile * m.height), "Game");
 	ft_init_game_elements(&game);
 
-	printf("w:'%p'\tg:'%p'\tp:'%p'\tc:'%p'\te:'%p'\n", tiles.wall, tiles.path, tiles.player, tiles.collectable, tiles.exit);
 	ft_load_textures(&ptrs);
 	printf("w:'%p'\tg:'%p'\tp:'%p'\tc:'%p'\te:'%p'\n", tiles.wall, tiles.path, tiles.player, tiles.collectable, tiles.exit);
 
@@ -54,11 +50,7 @@ int	main(int ac, char **av)
 	mlx_loop_hook(ptrs.mlx, draw_map, &ptrs);
 	mlx_loop(ptrs.mlx);
 
-	//ft_free_textures(&ptrs);
-	//mlx_destroy_window(ptrs.mlx, ptrs.win);
-	//mlx_destroy_display(ptrs.mlx);
-	//free(ptrs.mlx);
-	ft_free_map(&m);
+	ft_free_and_destroy(&ptrs, 0);
 
 	return (0);
 }
@@ -131,7 +123,6 @@ int	draw_map(t_mlx *ptrs)
 				mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->t->exit, w_tile, h_tile);
 		}
 	}
-	//ft_free_textures(ptrs);
 	return (0);
 }
 
@@ -142,7 +133,7 @@ int	handle_input(int key, t_game *game)
 
 	printf("key:'%d'\n", key);
 	if (key == 65307)
-		exit(0);
+		ft_free_and_destroy(game->ptr, 0);
 	new_x = game->p_x;
 	new_y = game->p_y;
 	if (key == 65362 || key == 119) /* up */
@@ -161,7 +152,7 @@ int	handle_input(int key, t_game *game)
 		if (game->m->map[new_y][new_x] == 'c')
 			game->m->map[new_y][new_x] = '0';
 		else if (game->m->map[new_y][new_x] == 'e')
-			exit(0);
+			ft_free_and_destroy(game->ptr, 0);
 		game->m->map[game->p_y][game->p_x] = 'p';
 		//mlx_clear_window(game->ptr->mlx, game->ptr->win);
 		//draw_map(game->ptr);
@@ -169,15 +160,23 @@ int	handle_input(int key, t_game *game)
 	return (0);
 }
 
+void	ft_free_and_destroy(t_mlx *ptrs, int status)
+{
+	ft_free_textures(ptrs);
+	mlx_destroy_window(ptrs->mlx, ptrs->win);
+	mlx_destroy_display(ptrs->mlx);
+	free(ptrs->mlx);
+	ft_free_map(ptrs->m);
+	exit(status);
+}
+
 void	ft_free_map(t_map *m)
 {
 	int	i;
 
 	free(m->raw);
-	i = -1;
-	while (m->map[++i])
+	i = m->height + 1;
+	while (--i >= 0)
 		free(m->map[i]);
-	free(m->map[i]);
-	m->raw = NULL;
-	m->map = NULL;
+	free(m->map);
 }
