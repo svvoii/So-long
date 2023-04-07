@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 11:24:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/04/05 16:53:08 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/04/07 17:33:50 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,45 +19,35 @@
 # include "mlx/mlx_int.h"
 
 # define PIX 32
+# define BUFF_SIZE 1024
 
-typedef struct s_map
+typedef struct s_mlx_ptr
 {
-	char	*raw;
-	char	**map;
-	int		height;
-	int		width;
-	int		tile;
-}	t_map;
-
-typedef struct s_textures
-{
+	void	*mlx;
+	void	*win;
+	/* sprite handles */
 	void	*wall;
 	void	*path;
 	void	*player;
 	void	*collectable;
 	void	*exit;
-}	t_textures;
-
-typedef struct s_mlx_ptr
-{
-	void		*mlx;
-	void		*win;
-	t_map		*m;
-	t_textures	*t;
-}	t_mlx;
-
-typedef struct s_game
-{
-	t_mlx	*ptr;
-	t_map	*m;
+	/* map */
+	char	*raw;
+	char	**map;
+	int		height;
+	int		width;
+	int		tile;
+	/* game */
 	int		c_count;
 	int		p_x;
 	int		p_y;
-}	t_game;
+}	t_mlx;
 
 /* main.c */
 
-/* ft_map */
-void	ft_map_to_array(t_map *m, char *file_path);
+/* ft_map.c */
+void	ft_map_to_array(t_mlx *m, char *file_path);
+/* ft_free_and_destroy.c */
+void	ft_free_and_destroy(t_mlx *ptrs, int status);
 
 #endif

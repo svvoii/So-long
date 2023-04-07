@@ -12,11 +12,9 @@
 
 #include "../includes/so_long.h"
 
-#define BUFF_SIZE 1024
-
 char	*ft_copy_to_buf(int fd);
 
-void	ft_map_to_array(t_map *m, char *file_path)
+void	ft_map_to_array(t_mlx *m, char *file_path)
 {
 	int		fd;
 	int		i;
@@ -40,12 +38,6 @@ void	ft_map_to_array(t_map *m, char *file_path)
 	}
 	m->height = i;
 	m->tile = PIX;
-/*
-	printf("%s\n", m->raw);
-	i = -1;
-	while (m->map[++i])
-		printf("'%s'\t'%d'\twidth:'%d'\theight:'%d'\n", m->map[i], i, m->width, m->height);
-*/
 }
 
 char	*ft_copy_to_buf(int fd)

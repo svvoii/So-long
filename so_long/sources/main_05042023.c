@@ -93,10 +93,10 @@ int	main(int ac, char **av)
 	//mlx_loop_hook(ptrs.mlx, draw_map, &ptrs);
 	mlx_loop(ptrs.mlx);
 
-	//ft_free_textures(&ptrs);
-	//mlx_destroy_window(ptrs.mlx, ptrs.win);
-	//mlx_destroy_display(ptrs.mlx);
-	//free(ptrs.mlx);
+	ft_free_textures(&ptrs);
+	mlx_destroy_window(ptrs.mlx, ptrs.win);
+	mlx_destroy_display(ptrs.mlx);
+	free(ptrs.mlx);
 	ft_free_map(&m);
 
 	return (0);
