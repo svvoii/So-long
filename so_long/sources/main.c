@@ -41,32 +41,10 @@ int	main(int ac, char **av)
 void	ft_init_map_and_window(t_mlx *ptrs, char *str)
 {
 	ft_map_to_array(ptrs, str); // opening file and storing the map data both in str and 2d arr.
+	ft_validating_map(ptrs);
 	ptrs->mlx = mlx_init();
 	ptrs->win = mlx_new_window(ptrs->mlx, (ptrs->tile * ptrs->width), (ptrs->tile * ptrs->height), "Game");
-	ft_init_game_elements(ptrs); // set player's initial position 
 	ft_load_textures(ptrs); // assign each sprite handle to its respective pointer
-}
-
-void	ft_init_game_elements(t_mlx *ptrs)
-{
-	int	h;
-	int	w;
-
-	h = -1;
-	while (++h < ptrs->height)
-	{
-		w = -1;
-		while (++w < ptrs->width)
-		{
-			if (ptrs->map[h][w] == 'P')
-			{
-				ptrs->p_y = h;
-				ptrs->p_x = w;
-			}
-			if (ptrs->map[h][w] == 'C')
-				ptrs->c_count++;
-		}
-	}
 }
 
 void	ft_load_textures(t_mlx *ptr)
@@ -74,7 +52,7 @@ void	ft_load_textures(t_mlx *ptr)
 	ptr->wall = mlx_xpm_file_to_image(ptr->mlx, "./xpm/wall_vines.xpm", &ptr->tile, &ptr->tile);
 	ptr->path = mlx_xpm_file_to_image(ptr->mlx, "./xpm/ground.xpm", &ptr->tile, &ptr->tile);
 	ptr->player = mlx_xpm_file_to_image(ptr->mlx, "./xpm/human.xpm", &ptr->tile, &ptr->tile);
-	ptr->collectable = mlx_xpm_file_to_image(ptr->mlx, "./xpm/gold_1.xpm", &ptr->tile, &ptr->tile);
+	ptr->collectable = mlx_xpm_file_to_image(ptr->mlx, "./xpm/gold_c.xpm", &ptr->tile, &ptr->tile);
 	ptr->exit = mlx_xpm_file_to_image(ptr->mlx, "./xpm/stone_arch.xpm", &ptr->tile, &ptr->tile);
 }
 
@@ -115,7 +93,7 @@ int	ft_handle_input(int key, t_mlx *ptrs)
 
 	printf("key:'%d'\n", key);
 	if (key == 65307)
-		ft_free_and_destroy(ptrs, 0);
+		ft_free_and_destroy(ptrs, 0, NULL);
 	new_x = ptrs->p_x;
 	new_y = ptrs->p_y;
 	if (key == 65362 || key == 119) /* up */
@@ -134,7 +112,7 @@ int	ft_handle_input(int key, t_mlx *ptrs)
 		if (ptrs->map[new_y][new_x] == 'C')
 			ptrs->map[new_y][new_x] = '0';
 		else if (ptrs->map[new_y][new_x] == 'E')
-			ft_free_and_destroy(ptrs, 0);
+			ft_free_and_destroy(ptrs, 0, NULL);
 		ptrs->map[ptrs->p_y][ptrs->p_x] = 'P';
 		//mlx_clear_window(game->ptr->mlx, game->ptr->win);
 		//ft_draw_map(game->ptr);
