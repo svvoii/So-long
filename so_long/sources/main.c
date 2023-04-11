@@ -52,7 +52,7 @@ void	ft_load_textures(t_mlx *ptr)
 	ptr->wall = mlx_xpm_file_to_image(ptr->mlx, "./xpm/wall_vines.xpm", &ptr->tile, &ptr->tile);
 	ptr->path = mlx_xpm_file_to_image(ptr->mlx, "./xpm/ground.xpm", &ptr->tile, &ptr->tile);
 	ptr->player = mlx_xpm_file_to_image(ptr->mlx, "./xpm/human.xpm", &ptr->tile, &ptr->tile);
-	ptr->collectable = mlx_xpm_file_to_image(ptr->mlx, "./xpm/gold_c.xpm", &ptr->tile, &ptr->tile);
+	ptr->collectable = mlx_xpm_file_to_image(ptr->mlx, "./xpm/coin_01.xpm", &ptr->tile, &ptr->tile);
 	ptr->exit = mlx_xpm_file_to_image(ptr->mlx, "./xpm/stone_arch.xpm", &ptr->tile, &ptr->tile);
 }
 
