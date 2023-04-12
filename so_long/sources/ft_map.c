@@ -76,6 +76,7 @@ void	ft_validating_map(t_mlx *ptrs)
 	if (ft_invalid_elements(ptrs->raw))
 		ft_free_and_destroy(ptrs, 1, "Error: Invalid map elements.\n");
 	h = -1;
+	ptrs->key = 0;
 	ptrs->p = 0;
 	ptrs->e = 0;
 	ptrs->c_count = 0;

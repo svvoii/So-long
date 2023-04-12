@@ -6,7 +6,7 @@
 /*   By: sv <sv@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 11:24:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/04/08 15:30:53 by sv               ###   ########.fr       */
+/*   Updated: 2023/04/12 17:50:55 by sv               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include "mlx/mlx.h"
 # include "mlx/mlx_int.h"
 
+# define FRAMES 6
 # define PIX 32
 # define BUFF_SIZE 1024
 # define W '1'
@@ -31,11 +32,14 @@ typedef struct s_mlx_ptr
 	void	*mlx;
 	void	*win;
 	/* sprites handles */
-	void	*wall;
-	void	*path;
-	void	*player;
-	void	*collectable;
-	void	*exit;
+	void	*wall[FRAMES];
+	void	*path[FRAMES];
+	void	*p_up[FRAMES];
+	void	*p_down[FRAMES];
+	void	*p_left[FRAMES];
+	void	*p_right[FRAMES];
+	void	*collectable[FRAMES];
+	void	*exit[FRAMES];
 	/* map */
 	char	*raw;
 	char	**map;
@@ -50,6 +54,7 @@ typedef struct s_mlx_ptr
 	int		e;
 	int		e_x;
 	int		e_y;
+	int		key;
 }	t_mlx;
 
 /* main.c */

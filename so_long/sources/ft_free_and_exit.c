@@ -6,7 +6,7 @@
 /*   By: sv <sv@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 13:21:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/04/08 12:22:35 by sv               ###   ########.fr       */
+/*   Updated: 2023/04/12 18:04:12 by sv               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,14 @@ void	ft_free_and_destroy(t_mlx *ptrs, int status, char *msg)
 
 void	ft_free_textures(t_mlx *ptrs)
 {
-	mlx_destroy_image(ptrs->mlx, ptrs->wall);
-	mlx_destroy_image(ptrs->mlx, ptrs->path);
-	mlx_destroy_image(ptrs->mlx, ptrs->player);
-	mlx_destroy_image(ptrs->mlx, ptrs->collectable);
-	mlx_destroy_image(ptrs->mlx, ptrs->exit);
+	mlx_destroy_image(ptrs->mlx, ptrs->wall[0]);
+	mlx_destroy_image(ptrs->mlx, ptrs->path[0]);
+	mlx_destroy_image(ptrs->mlx, ptrs->p_up[0]);
+	mlx_destroy_image(ptrs->mlx, ptrs->p_down[0]);
+	mlx_destroy_image(ptrs->mlx, ptrs->p_left[0]);
+	mlx_destroy_image(ptrs->mlx, ptrs->p_right[0]);
+	mlx_destroy_image(ptrs->mlx, ptrs->collectable[0]);
+	mlx_destroy_image(ptrs->mlx, ptrs->exit[0]);
 }
 
 void	ft_free_map(t_mlx *ptrs)
