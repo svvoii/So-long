@@ -67,12 +67,12 @@ void	ft_load_player_frames(t_mlx *ptr)
 	ptr->p_left[3] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_left_03.xpm", &ptr->tile, &ptr->tile);
 	ptr->p_left[4] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_left_04.xpm", &ptr->tile, &ptr->tile);
 	ptr->p_left[5] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_left_05.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_right[0] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_right_00.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_right[1] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_right_01.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_right[2] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_right_02.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_right[3] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_right_03.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_right[4] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_right_04.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_right[5] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_right_05.xpm", &ptr->tile, &ptr->tile);
+	ptr->p_right[0] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_64_right_00.xpm", &ptr->tile, &ptr->tile);
+	ptr->p_right[1] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_64_right_01.xpm", &ptr->tile, &ptr->tile);
+	ptr->p_right[2] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_64_right_02.xpm", &ptr->tile, &ptr->tile);
+	ptr->p_right[3] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_64_right_03.xpm", &ptr->tile, &ptr->tile);
+	ptr->p_right[4] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_64_right_04.xpm", &ptr->tile, &ptr->tile);
+	ptr->p_right[5] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_64_right_05.xpm", &ptr->tile, &ptr->tile);
 }
 
 void	ft_load_coin_frames(t_mlx *ptr)
@@ -95,17 +95,50 @@ void	ft_load_textures(t_mlx *ptr)
 	ft_load_coin_frames(ptr);
 	ptr->exit[0] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/door_01.xpm", &ptr->tile, &ptr->tile); 
 }
-
+/*
 void	ft_player_direction(t_mlx *ptrs, int *frame, int w_tile, int h_tile)
 {
-	if (ptrs->key == 65362 || ptrs->key == 119) /* up */
+	static int	frame_offset[] = {0, 1, 2, 3, 2, 1};
+	static int	anim_frames = FRAMES;
+	static int	frame_delay = 3;
+	int	frame_idx;
+	int	frame_offset_idx;
+	int	offset_x = 0;
+	int	offset_y = 0;
+
+	//printf("w_adj: '%d', h_adj: '%d'\tw_tile: '%d', h_tile: '%d'\n", w_adj_tile, h_adj_tile, w_tile, h_tile);
+	if (ptrs->key == 65362 || ptrs->key == 119) // up 
+		offset_y = -(*frame) * ptrs->tile;
+	else if (ptrs->key == 65364 || ptrs->key == 115) // down
+		offset_y = (*frame) * ptrs->tile;	
+	else if (ptrs->key == 65361 || ptrs->key == 97) // left
+		offset_x = -(*frame) * ptrs->tile;	
+	else if (ptrs->key == 65363 || ptrs->key == 100) // right
+		offset_x = (*frame) * ptrs->tile;	
+	
+	if (offset_x == 0 && offset_y == 0)
+		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_down[0], w_tile, h_tile);
+	else
+	{
+		frame_offset_idx = (*frame) / frame_delay % anim_frames;
+		frame_idx = (*frame) % frame_delay + frame_offset[frame_offset_idx] + frame_delay;
+		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_up[frame_idx], w_tile + offset_x, h_tile + offset_y);
+	}
+	(*frame)++;
+	if (*frame >= anim_frames * frame_delay)
+		*frame = 0;
+}
+*/
+void	ft_player_direction(t_mlx *ptrs, int *frame, int w_tile, int h_tile)
+{
+	if (ptrs->key == 65362 || ptrs->key == 119) // up
 		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_up[*frame], w_tile, h_tile);
-	else if (ptrs->key == 65364 || ptrs->key == 115) /* down */
+	else if (ptrs->key == 65364 || ptrs->key == 115) // down
 		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_down[*frame], w_tile, h_tile);
-	else if (ptrs->key == 65361 || ptrs->key == 97) /* left */
+	else if (ptrs->key == 65361 || ptrs->key == 97) // left 
 		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_left[*frame], w_tile, h_tile);
-	else if (ptrs->key == 65363 || ptrs->key == 100) /* right */
-		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_right[*frame], w_tile, h_tile);
+	else if (ptrs->key == 65363 || ptrs->key == 100) // right 
+		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_right[*frame], w_tile - ptrs->tile, h_tile);
 	else
 		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_down[0], w_tile, h_tile);
 }
