@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   so_long.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sv <sv@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 11:24:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/04/12 17:50:55 by sv               ###   ########.fr       */
+/*   Updated: 2023/04/14 18:19:07 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,15 @@ typedef struct s_mlx_ptr
 	int		p;
 	int		p_x;
 	int		p_y;
+	int		t_x;
+	int		t_y;
 	int		e;
 	int		e_x;
 	int		e_y;
 	int		key;
+	/* index */
+	int		w;
+	int		h;
 }	t_mlx;
 
 /* main.c */
