@@ -124,8 +124,8 @@ void	ft_map_validation(t_mlx *ptrs, int h, int w)
 				ft_free_and_destroy(ptrs, 1, "Error: Make sure the map wals are complete.\n");
 			if (ptrs->map[h][w] == 'P')
 			{
-				ptrs->p_y = h;
-				ptrs->p_x = w;
+				ptrs->player_y = h;
+				ptrs->player_x = w;
 				ptrs->p++;
 			}
 			else if (ptrs->map[h][w] == 'E')

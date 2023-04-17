@@ -18,6 +18,7 @@ int		ft_draw_map(t_mlx *ptrs);
 void	ft_init_game_elements(t_mlx *ptrs);
 int		ft_handle_input(int key, t_mlx *ptrs);
 int		ft_on_the_map(t_mlx *ptr, int x, int y);
+void	ft_move_player(t_mlx *ptrs, int x, int y);
 
 int	main(int ac, char **av)
 {
@@ -99,44 +100,6 @@ void	ft_load_textures(t_mlx *ptr)
 
 void	ft_player_direction(t_mlx *ptrs, int *frame, int w_tile, int h_tile)
 {
-	if ((ptrs->key == 65362 || ptrs->key == 119) && (h_tile > ptrs->t_y)) // up 
-	{
-		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_up[*frame], w_tile, h_tile);
-	}
-	else if ((ptrs->key == 65364 || ptrs->key == 115) && (h_tile < ptrs->t_y)) // down
-	{
-		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_down[*frame], w_tile, h_tile);
-	}
-	else if ((ptrs->key == 65361 || ptrs->key == 97) && (w_tile + ptrs->w > w_tile - ptrs->tile)) // left
-	{
-		ptrs->w -= 2;
-		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_left[*frame], w_tile + ptrs->w, h_tile);
-		printf("left: w'%d'\n", ptrs->w);
-	}
-	else if ((ptrs->key == 65363 || ptrs->key == 100) && (w_tile + ptrs->w < w_tile + ptrs->tile)) // right
-	{
-		ptrs->w += 2;
-		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_right[*frame], w_tile + ptrs->w, h_tile);
-		printf("right: w'%d'\n", ptrs->w);
-	}
-	else
-		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_down[0], w_tile, h_tile);
-	//printf("t_x:'%d'\tt_y:'%d'\n", ptrs->t_x * ptrs->tile, ptrs->t_y * ptrs->tile);
-	if (w_tile + ptrs->w == ptrs->t_x * ptrs->tile && h_tile + ptrs->h == ptrs->t_y * ptrs->tile)
-	{
-		ptrs->map[ptrs->p_y][ptrs->p_x] = '0';
-		ptrs->p_x = ptrs->t_x;
-		ptrs->p_y = ptrs->t_y;
-		ptrs->map[ptrs->p_y][ptrs->p_x] = 'P';
-		ptrs->w = 0;
-		ptrs->h = 0;
-		printf("\treset! w:'%d'\tw_tile:'%d', h_tile:'%d'\n", ptrs->w, w_tile, h_tile);
-		//ptrs->key = 0;
-	}
-}
-/*
-void	ft_player_direction(t_mlx *ptrs, int *frame, int w_tile, int h_tile)
-{
 	if (ptrs->key == 65362 || ptrs->key == 119) // up
 		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_up[*frame], w_tile, h_tile);
 	else if (ptrs->key == 65364 || ptrs->key == 115) // down
@@ -148,7 +111,7 @@ void	ft_player_direction(t_mlx *ptrs, int *frame, int w_tile, int h_tile)
 	else
 		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_down[0], w_tile, h_tile);
 }
-*/
+
 int	ft_draw_map(t_mlx *ptrs)
 {
 	int			h;
@@ -171,6 +134,8 @@ int	ft_draw_map(t_mlx *ptrs)
 				mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->path[0], w_tile, h_tile);
 			else if (ptrs->map[h][w] == 'P')
 			{
+				if (ptrs->prev_x != ptrs->player_x || ptrs->prev_y != ptrs->player_y)
+					ft_move_player(ptrs, w, h);
 				ft_player_direction(ptrs, &frame, w_tile, h_tile);
 			}
 			else if (ptrs->map[h][w] == 'C')
@@ -185,51 +150,121 @@ int	ft_draw_map(t_mlx *ptrs)
 	return (0);
 }
 
+void	ft_move_player(t_mlx *ptrs, int x, int y)
+{
+	int	tile = ptrs->tile;
+	int	x_prev = ptrs->prev_x * tile;
+	int	y_prev = ptrs->prev_y * tile;
+	int	x_p = ptrs->player_x * tile;
+	int	y_p = ptrs->player_y * tile;
+	int	dx = x_prev - x_p; // can be -32 (left) or 0 or 32 (right)
+	int	dy = y_prev - y_p; // can be -32 (up) or 0 or 32 (down)
+	int	step = 2;
+	int	i;
+
+	i = 0;
+	while (i < tile)
+	{
+		if (dx != 0)
+			x_p += dx > 0 ? step : -step;
+		if (dy != 0)
+			y_p += dy > 0 ? step : -step;
+		ptrs->player_x = x_p / tile;
+		ptrs->player_y = y_p / tile;
+		//mlx_clear_window(ptrs->mlx, ptrs->win);
+		ft_draw_map(ptrs);
+		i += step;
+	}
+}
+
 int	ft_handle_input(int key, t_mlx *ptrs)
 {
 	ptrs->key = key;
 	if (key == 65307)
 		ft_free_and_destroy(ptrs, 0, NULL);
-	ptrs->t_x = ptrs->p_x;
-	ptrs->t_y = ptrs->p_y;
+	ptrs->prev_x = ptrs->player_x;
+	ptrs->prev_y = ptrs->player_y;
 	if ((key == 65362 || key == 119) && (ft_on_the_map(ptrs, 0, -1))) /* up */
 	{
 		printf("key:'%d'\tup\n", ptrs->key);
-		ptrs->t_y--;
+		ptrs->player_y--;
 	}
 	else if (key == 65364 || key == 115 && (ft_on_the_map(ptrs, 0, 1))) /* down */
 	{
 		printf("key:'%d'\tdown\n", ptrs->key);
-		ptrs->t_y++;
+		ptrs->player_y++;
 	}
 	else if (key == 65361 || key == 97 && (ft_on_the_map(ptrs, -1, 0))) /* left */
 	{
 		printf("key:'%d'\tleft\n", ptrs->key);
-		ptrs->t_x--;
+		ptrs->player_x--;
 	}
 	else if (key == 65363 || key == 100 && (ft_on_the_map(ptrs, 1, 0))) /* right */
 	{
 		printf("key:'%d'\tright\n", ptrs->key);
-		ptrs->t_x++;
+		ptrs->player_x++;
 	}
-	if (ptrs->map[ptrs->t_y][ptrs->t_x] != '1')
+	if (ptrs->map[ptrs->player_y][ptrs->player_x] == '1')
 	{
-		//ptrs->map[ptrs->p_y][ptrs->p_x] = 'p';
-		//ptrs->p_x = ptrs->t_x;
-		//ptrs->p_y = ptrs->t_y;
-		if (ptrs->map[ptrs->t_y][ptrs->t_x] == 'C')
-			ptrs->map[ptrs->t_y][ptrs->t_x] = '0';
-		else if (ptrs->map[ptrs->t_y][ptrs->t_x] == 'E')
+		ptrs->player_x = ptrs->prev_x;
+		ptrs->player_y = ptrs->prev_y;
+	}
+	else
+	{
+		ptrs->map[ptrs->prev_y][ptrs->prev_x] = '0';
+		//ptrs->player_x = ptrs->dest_x;
+		//ptrs->player_y = ptrs->dest_y;
+		if (ptrs->map[ptrs->player_y][ptrs->player_x] == 'C')
+			ptrs->map[ptrs->player_y][ptrs->player_x] = '0';
+		else if (ptrs->map[ptrs->player_y][ptrs->player_x] == 'E')
 			ft_free_and_destroy(ptrs, 0, NULL);
-		ptrs->map[ptrs->t_y][ptrs->t_x] = 'T';
-		//mlx_clear_window(ptrs->mlx, ptrs->win);
-		//ft_draw_map(ptrs);
+		ptrs->map[ptrs->player_y][ptrs->player_x] = 'P';
 	}
 	return (0);
 }
 
 int	ft_on_the_map(t_mlx *ptr, int x, int y)
 {
-	return (ptr->t_x + x >= 0 && ptr->t_x + x < ptr->width
-		&& ptr->t_y + y >= 0 && ptr->t_y + y < ptr->height);
+	return (ptr->player_x + x >= 0 && ptr->player_x + x < ptr->width
+		&& ptr->player_y + y >= 0 && ptr->player_y + y < ptr->height);
 }
+
+/*
+void	ft_player_direction(t_mlx *ptrs, int *frame, int w_tile, int h_tile)
+{
+	if ((ptrs->key == 65362 || ptrs->key == 119) && (h_tile > ptrs->dest_y)) // up 
+	{
+		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_up[*frame], w_tile, h_tile);
+	}
+	else if ((ptrs->key == 65364 || ptrs->key == 115) && (h_tile < ptrs->dest_y)) // down
+	{
+		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_down[*frame], w_tile, h_tile);
+	}
+	else if ((ptrs->key == 65361 || ptrs->key == 97) && (w_tile + ptrs->w > w_tile - ptrs->tile)) // left
+	{
+		ptrs->w -= 2;
+		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_left[*frame], w_tile + ptrs->w, h_tile);
+		printf("left: w'%d'\n", ptrs->w);
+	}
+	else if ((ptrs->key == 65363 || ptrs->key == 100) && (w_tile + ptrs->w < w_tile + ptrs->tile)) // right
+	{
+		ptrs->w += 2;
+		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_right[*frame], w_tile + ptrs->w, h_tile);
+		printf("right: w'%d'\n", ptrs->w);
+	}
+	else
+		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_down[0], w_tile, h_tile);
+	//printf("dest_x:'%d'\tdest_y:'%d'\n", ptrs->dest_x * ptrs->tile, ptrs->dest_y * ptrs->tile);
+	if (w_tile + ptrs->w == ptrs->dest_x * ptrs->tile && h_tile + ptrs->h == ptrs->dest_y * ptrs->tile)
+	{
+		ptrs->map[ptrs->player_y][ptrs->player_x] = '0';
+		ptrs->player_x = ptrs->dest_x;
+		ptrs->player_y = ptrs->dest_y;
+		ptrs->map[ptrs->player_y][ptrs->player_x] = 'P';
+		ptrs->w = 0;
+		ptrs->h = 0;
+		printf("\treset! w:'%d'\tw_tile:'%d', h_tile:'%d'\n", ptrs->w, w_tile, h_tile);
+		//ptrs->key = 0;
+	}
+}
+*/

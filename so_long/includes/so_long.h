@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 11:24:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/04/14 18:19:07 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/04/17 18:26:59 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,10 @@ typedef struct s_mlx_ptr
 	/* game elements */
 	int		c_count;
 	int		p;
-	int		p_x;
-	int		p_y;
-	int		t_x;
-	int		t_y;
+	int		player_x;
+	int		player_y;
+	int		prev_x;
+	int		prev_y;
 	int		e;
 	int		e_x;
 	int		e_y;
