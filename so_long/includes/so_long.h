@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   so_long.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sv <sv@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 11:24:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/04/17 18:26:59 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/04/19 15:54:23 by sv               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,11 @@ typedef struct s_mlx_ptr
 {
 	void	*mlx;
 	void	*win;
+	void	*back_buf;
+	void	*back_buf_addr;
+	int		bpp;
+	int		size_line;
+	int		endian;
 	/* sprites handles */
 	void	*wall[FRAMES];
 	void	*path[FRAMES];
@@ -51,8 +56,8 @@ typedef struct s_mlx_ptr
 	int		p;
 	int		player_x;
 	int		player_y;
-	int		prev_x;
-	int		prev_y;
+	int		next_x;
+	int		next_y;
 	int		e;
 	int		e_x;
 	int		e_y;

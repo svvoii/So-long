@@ -12,259 +12,245 @@
 
 #include "../includes/so_long.h"
 
-void	ft_init_map_and_window(t_mlx *ptrs, char *str);
-void	ft_load_textures(t_mlx *ptr);
-int		ft_draw_map(t_mlx *ptrs);
-void	ft_init_game_elements(t_mlx *ptrs);
-int		ft_handle_input(int key, t_mlx *ptrs);
-int		ft_on_the_map(t_mlx *ptr, int x, int y);
-void	ft_move_player(t_mlx *ptrs, int x, int y);
+void	ft_init_map_and_window(t_mlx *p, char *str);
+void	ft_load_textures(t_mlx *p);
+int		ft_draw_map(t_mlx *p);
+void	ft_init_game_elements(t_mlx *p);
+int		ft_handle_input(int key, t_mlx *p);
+int		ft_on_the_map(t_mlx *p, int x, int y);
+void	ft_move_player(t_mlx *p, int x, int y);
+
+void	ft_wall(t_mlx *p, int x, int y);
+void	ft_path(t_mlx *p, int x, int y);
+void	ft_exit(t_mlx *p, int x, int y);
+void	ft_collectable(t_mlx *p, int x, int y, int frame);
+void	ft_player(t_mlx *p, int x, int y, int frame);
+void	ft_reset_p(t_mlx *p);
+void	ft_set_direction(t_mlx *p, int x, int y);
 
 int	main(int ac, char **av)
 {
-	t_mlx		ptrs;
+	t_mlx	p;
 
 	if (ac != 2)
 		return(0);
-	ft_init_map_and_window(&ptrs, av[ac - 1]);
+	ft_init_map_and_window(&p, av[ac - 1]);
 
 	int i = -1;
-	while (ptrs.map[++i])
-		printf("'%s'\t'%d'\twidth:'%d'\theight:'%d'\ttile:'%d'\n", ptrs.map[i], i, ptrs.width, ptrs.height, ptrs.tile);
+	while (p.map[++i])
+		printf("'%s'\t'%d'\twidth:'%d'\theight:'%d'\ttile:'%d'\n", p.map[i], i, p.width, p.height, p.tile);
 
-	mlx_hook(ptrs.win, KeyPress, KeyPressMask, ft_handle_input, &ptrs);
-	mlx_loop_hook(ptrs.mlx, ft_draw_map, &ptrs);
-	mlx_loop(ptrs.mlx);
-
-	//ft_free_and_destroy(&ptrs, 0);
-	//return (0);
+	mlx_hook(p.win, KeyPress, KeyPressMask, ft_handle_input, &p);
+	mlx_loop_hook(p.mlx, ft_draw_map, &p);
+	mlx_loop(p.mlx);
 }
 
-void	ft_init_map_and_window(t_mlx *ptrs, char *str)
+void	ft_init_map_and_window(t_mlx *p, char *str)
 {
-	ft_map_to_array(ptrs, str); // opening file and storing the map data both in str and 2d arr.
-	ft_validating_map(ptrs);
-	ptrs->mlx = mlx_init();
-	ptrs->win = mlx_new_window(ptrs->mlx, (ptrs->tile * ptrs->width), (ptrs->tile * ptrs->height), "Game");
-	ft_load_textures(ptrs); // assign each sprite handle to its respective pointer
+	ft_map_to_array(p, str); // opening file and storing the map data both in str and 2d arr.
+	ft_validating_map(p);
+	p->mlx = mlx_init();
+	p->win = mlx_new_window(p->mlx, (p->tile * p->width), (p->tile * p->height), "Game");
+	//p->back_buf = mlx_new_window(p->mlx, (p->tile * p->width), (p->tile * p->height), "Back Buffer");
+	p->back_buf = mlx_new_image(p->mlx, (p->tile * p->width), (p->tile * p->height));
+	p->back_buf_addr = mlx_get_data_addr(p->back_buf, &(p->bpp), &(p->size_line), &(p->endian));
+	ft_load_textures(p); // assign each sprite handle to its respective pointer
 }
 
-void	ft_load_player_frames(t_mlx *ptr)
+void	ft_load_player_frames(t_mlx *p)
 {
-	ptr->p_up[0] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_up_00.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_up[1] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_up_01.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_up[2] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_up_02.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_up[3] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_up_03.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_up[4] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_up_04.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_up[5] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_up_05.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_down[0] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_down_00.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_down[1] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_down_01.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_down[2] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_down_02.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_down[3] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_down_03.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_down[4] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_down_04.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_down[5] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_down_05.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_left[0] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_left_00.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_left[1] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_left_01.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_left[2] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_left_02.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_left[3] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_left_03.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_left[4] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_left_04.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_left[5] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_left_05.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_right[0] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_right_00.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_right[1] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_right_01.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_right[2] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_right_02.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_right[3] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_right_03.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_right[4] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_right_04.xpm", &ptr->tile, &ptr->tile);
-	ptr->p_right[5] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/cat_right_05.xpm", &ptr->tile, &ptr->tile);
+	p->p_up[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_up_00.xpm", &p->tile, &p->tile);
+	p->p_up[1] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_up_01.xpm", &p->tile, &p->tile);
+	p->p_up[2] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_up_02.xpm", &p->tile, &p->tile);
+	p->p_up[3] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_up_03.xpm", &p->tile, &p->tile);
+	p->p_up[4] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_up_04.xpm", &p->tile, &p->tile);
+	p->p_up[5] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_up_05.xpm", &p->tile, &p->tile);
+	p->p_down[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_down_00.xpm", &p->tile, &p->tile);
+	p->p_down[1] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_down_01.xpm", &p->tile, &p->tile);
+	p->p_down[2] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_down_02.xpm", &p->tile, &p->tile);
+	p->p_down[3] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_down_03.xpm", &p->tile, &p->tile);
+	p->p_down[4] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_down_04.xpm", &p->tile, &p->tile);
+	p->p_down[5] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_down_05.xpm", &p->tile, &p->tile);
+	p->p_left[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_left_00.xpm", &p->tile, &p->tile);
+	p->p_left[1] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_left_01.xpm", &p->tile, &p->tile);
+	p->p_left[2] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_left_02.xpm", &p->tile, &p->tile);
+	p->p_left[3] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_left_03.xpm", &p->tile, &p->tile);
+	p->p_left[4] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_left_04.xpm", &p->tile, &p->tile);
+	p->p_left[5] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_left_05.xpm", &p->tile, &p->tile);
+	p->p_right[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_right_00.xpm", &p->tile, &p->tile);
+	p->p_right[1] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_right_01.xpm", &p->tile, &p->tile);
+	p->p_right[2] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_right_02.xpm", &p->tile, &p->tile);
+	p->p_right[3] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_right_03.xpm", &p->tile, &p->tile);
+	p->p_right[4] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_right_04.xpm", &p->tile, &p->tile);
+	p->p_right[5] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_right_05.xpm", &p->tile, &p->tile);
 }
 
-void	ft_load_coin_frames(t_mlx *ptr)
+void	ft_load_coin_frames(t_mlx *p)
 {
-	ptr->collectable[0] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/coin_00.xpm", &ptr->tile, &ptr->tile);
-	ptr->collectable[1] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/coin_01.xpm", &ptr->tile, &ptr->tile);
-	ptr->collectable[2] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/coin_02.xpm", &ptr->tile, &ptr->tile);
-	ptr->collectable[3] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/coin_03.xpm", &ptr->tile, &ptr->tile);
-	ptr->collectable[4] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/coin_04.xpm", &ptr->tile, &ptr->tile);
-	ptr->collectable[5] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/coin_05.xpm", &ptr->tile, &ptr->tile);
+	p->collectable[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/coin_00.xpm", &p->tile, &p->tile);
+	p->collectable[1] = mlx_xpm_file_to_image(p->mlx, "./xpm/coin_01.xpm", &p->tile, &p->tile);
+	p->collectable[2] = mlx_xpm_file_to_image(p->mlx, "./xpm/coin_02.xpm", &p->tile, &p->tile);
+	p->collectable[3] = mlx_xpm_file_to_image(p->mlx, "./xpm/coin_03.xpm", &p->tile, &p->tile);
+	p->collectable[4] = mlx_xpm_file_to_image(p->mlx, "./xpm/coin_04.xpm", &p->tile, &p->tile);
+	p->collectable[5] = mlx_xpm_file_to_image(p->mlx, "./xpm/coin_05.xpm", &p->tile, &p->tile);
 }
 
-void	ft_load_textures(t_mlx *ptr)
+void	ft_load_textures(t_mlx *p)
 {
-	ptr->wall[0] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/wall_vines.xpm", &ptr->tile, &ptr->tile);
-	ptr->path[0] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/ground.xpm", &ptr->tile, &ptr->tile);
-	//ptr->player[0] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/human.xpm", &ptr->tile, &ptr->tile); 
-	//ptr->collectable[0] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/coin_00.xpm", &ptr->tile, &ptr->tile);
-	ft_load_player_frames(ptr);
-	ft_load_coin_frames(ptr);
-	ptr->exit[0] = mlx_xpm_file_to_image(ptr->mlx, "./xpm/door_01.xpm", &ptr->tile, &ptr->tile); 
+	p->wall[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/wall_vines.xpm", &p->tile, &p->tile);
+	p->path[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/ground.xpm", &p->tile, &p->tile);
+	ft_load_player_frames(p);
+	ft_load_coin_frames(p);
+	p->exit[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/door_01.xpm", &p->tile, &p->tile); 
 }
 
-void	ft_player_direction(t_mlx *ptrs, int *frame, int w_tile, int h_tile)
+void	ft_player_direction(t_mlx *p, int *frame, int w_tile, int h_tile)
 {
-	if (ptrs->key == 65362 || ptrs->key == 119) // up
-		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_up[*frame], w_tile, h_tile);
-	else if (ptrs->key == 65364 || ptrs->key == 115) // down
-		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_down[*frame], w_tile, h_tile);
-	else if (ptrs->key == 65361 || ptrs->key == 97) // left 
-		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_left[*frame], w_tile, h_tile);
-	else if (ptrs->key == 65363 || ptrs->key == 100) // right 
-		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_right[*frame], w_tile, h_tile);
+	if (p->key == 65362 || p->key == 119) // up
+		mlx_put_image_to_window(p->mlx, p->win, p->p_up[*frame], w_tile, h_tile);
+	else if (p->key == 65364 || p->key == 115) // down
+		mlx_put_image_to_window(p->mlx, p->win, p->p_down[*frame], w_tile, h_tile);
+	else if (p->key == 65361 || p->key == 97) // left 
+		mlx_put_image_to_window(p->mlx, p->win, p->p_left[*frame], w_tile, h_tile);
+	else if (p->key == 65363 || p->key == 100) // right 
+		mlx_put_image_to_window(p->mlx, p->win, p->p_right[*frame], w_tile, h_tile);
 	else
-		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_down[0], w_tile, h_tile);
+		mlx_put_image_to_window(p->mlx, p->win, p->p_down[0], w_tile, h_tile);
 }
 
-int	ft_draw_map(t_mlx *ptrs)
+int	ft_draw_map(t_mlx *p)
 {
-	int			h;
-	int			w;
-	int			w_tile;
-	int			h_tile;
-	static int			frame;
+	int			y;
+	int			x;
+	static int	frame;
 
-	h = -1;
-	while (++h < ptrs->height)
+	//mlx_destroy_image(p->mlx, p->back_buf);
+	//p->back_buf = mlx_new_image(p->mlx, (p->tile * p->width), (p->tile * p->height));
+	//p->back_buf_addr = mlx_get_data_addr(p->back_buf, &(p->bpp), &(p->size_line), &(p->endian));
+
+	y = -1;
+	while (++y < p->height)
 	{
-		w = -1;
-		while (++w < ptrs->width)
+		x = -1;
+		while (++x < p->width)
 		{
-			w_tile = w * ptrs->tile;
-			h_tile = h * ptrs->tile;
-			if (ptrs->map[h][w] == '1')
-				mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->wall[0], w_tile, h_tile);
-			else if (ptrs->map[h][w] == '0')
-				mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->path[0], w_tile, h_tile);
-			else if (ptrs->map[h][w] == 'P')
-			{
-				if (ptrs->prev_x != ptrs->player_x || ptrs->prev_y != ptrs->player_y)
-					ft_move_player(ptrs, w, h);
-				ft_player_direction(ptrs, &frame, w_tile, h_tile);
-			}
-			else if (ptrs->map[h][w] == 'C')
-				mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->collectable[frame], w_tile, h_tile);
-			else if (ptrs->map[h][w] == 'E')
-				mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->exit[0], w_tile, h_tile);
+			if (p->map[y][x] == '1')
+				mlx_put_image_to_window(p->mlx, p->win, p->wall[0], x * p->tile, y * p->tile);
+			else if (p->map[y][x] == '0')
+				mlx_put_image_to_window(p->mlx, p->win, p->path[0], x * p->tile, y * p->tile);
+			else if (p->map[y][x] == 'E')
+				mlx_put_image_to_window(p->mlx, p->win, p->exit[0], x * p->tile, y * p->tile);
+			if (p->map[y][x] == 'C')
+				mlx_put_image_to_window(p->mlx, p->win, p->collectable[frame], x * p->tile, y * p->tile);
+			else if (p->map[y][x] == 'P')
+				ft_player_direction(p, &frame, x * PIX, y * PIX);
 		}
 	}
-	//printf("frame: '%d'\n", frame);
+	//mlx_put_image_to_window(p->mlx, p->win, p->back_buf, 0, 0);
+
 	frame = (frame + 1) % FRAMES;
 	usleep(100000);
 	return (0);
 }
 
-void	ft_move_player(t_mlx *ptrs, int x, int y)
+void	ft_player(t_mlx *p, int x, int y, int frame)
 {
-	int	tile = ptrs->tile;
-	int	x_prev = ptrs->prev_x * tile;
-	int	y_prev = ptrs->prev_y * tile;
-	int	x_p = ptrs->player_x * tile;
-	int	y_p = ptrs->player_y * tile;
-	int	dx = x_prev - x_p; // can be -32 (left) or 0 or 32 (right)
-	int	dy = y_prev - y_p; // can be -32 (up) or 0 or 32 (down)
-	int	step = 2;
-	int	i;
+	static int	i;
+	int			step = 4;
 
-	i = 0;
-	while (i < tile)
+	printf("i:'%d'\n", i);
+	printf("key:'%d'\n", p->key);
+	if (p->key != 0)
 	{
-		if (dx != 0)
-			x_p += dx > 0 ? step : -step;
-		if (dy != 0)
-			y_p += dy > 0 ? step : -step;
-		ptrs->player_x = x_p / tile;
-		ptrs->player_y = y_p / tile;
-		//mlx_clear_window(ptrs->mlx, ptrs->win);
-		ft_draw_map(ptrs);
+		if ((i <= PIX) && (p->next_x != p->player_x || p->next_y != p->player_y))
+		{
+			if (p->next_y < p->player_y) // move up
+			{
+				ft_player_direction(p, &frame, x * PIX, (y * PIX) - i);
+				if (p->next_y * PIX == (y * PIX) - i)
+					ft_reset_p(p);
+			}
+			if (p->next_y > p->player_y) // move down
+			{
+				ft_player_direction(p, &frame, x * PIX, (y * PIX) + i);
+				if (p->next_y * PIX == (y * PIX) + i)
+					ft_reset_p(p);
+			}
+			if (p->next_x < p->player_x) // move left
+			{
+				ft_player_direction(p, &frame, (x * PIX) - i, y * PIX);
+				if (p->next_x * PIX == (x * PIX) - i)
+					ft_reset_p(p);
+			}
+			if (p->next_x > p->player_x) // move right
+			{
+				ft_player_direction(p, &frame, (x * PIX) + i, y * PIX);
+				if (p->next_x * PIX == (x * PIX) + i)
+					ft_reset_p(p);
+			}
+		}
+		else
+		{
+			i = 0;
+			ft_set_direction(p, x, y);
+		}
 		i += step;
+	}
+	else
+		ft_player_direction(p, &frame, x, y);
+}
+
+void	ft_reset_p(t_mlx *p)
+{
+	if (p->map[p->next_y][p->next_x] == 'C')
+		p->map[p->next_y][p->next_x] = '0';
+	else if (p->map[p->next_y][p->next_x] == 'E')
+		ft_free_and_destroy(p, 0, NULL);
+	p->map[p->player_y][p->player_x] = '0';
+	p->player_y = p->next_y;
+	p->player_x = p->next_x;
+	p->map[p->player_y][p->player_x] = 'P';
+}
+
+void	ft_set_direction(t_mlx *p, int x, int y)
+{
+	if ((p->key == 65362 || p->key == 119) && (ft_on_the_map(p, 0, -1))) /* up */
+	{
+		printf("key:'%d'\tup\n", p->key);
+		p->next_y--;
+	}
+	else if (p->key == 65364 || p->key == 115 && (ft_on_the_map(p, 0, 1))) /* down */
+	{
+		printf("key:'%d'\tdown\n", p->key);
+		p->next_y++;
+	}
+	else if (p->key == 65361 || p->key == 97 && (ft_on_the_map(p, -1, 0))) /* left */
+	{
+		printf("key:'%d'\tleft\n", p->key);
+		p->next_x--;
+	}
+	else if (p->key == 65363 || p->key == 100 && (ft_on_the_map(p, 1, 0))) /* right */
+	{
+		printf("key:'%d'\tright\n", p->key);
+		p->next_x++;
+	}
+	if (p->map[p->next_y][p->next_x] == '1')
+	{
+		p->next_x = p->player_x;
+		p->next_y = p->player_y;
 	}
 }
 
-int	ft_handle_input(int key, t_mlx *ptrs)
+int	ft_handle_input(int key, t_mlx *p)
 {
-	ptrs->key = key;
+	p->key = key;
 	if (key == 65307)
-		ft_free_and_destroy(ptrs, 0, NULL);
-	ptrs->prev_x = ptrs->player_x;
-	ptrs->prev_y = ptrs->player_y;
-	if ((key == 65362 || key == 119) && (ft_on_the_map(ptrs, 0, -1))) /* up */
-	{
-		printf("key:'%d'\tup\n", ptrs->key);
-		ptrs->player_y--;
-	}
-	else if (key == 65364 || key == 115 && (ft_on_the_map(ptrs, 0, 1))) /* down */
-	{
-		printf("key:'%d'\tdown\n", ptrs->key);
-		ptrs->player_y++;
-	}
-	else if (key == 65361 || key == 97 && (ft_on_the_map(ptrs, -1, 0))) /* left */
-	{
-		printf("key:'%d'\tleft\n", ptrs->key);
-		ptrs->player_x--;
-	}
-	else if (key == 65363 || key == 100 && (ft_on_the_map(ptrs, 1, 0))) /* right */
-	{
-		printf("key:'%d'\tright\n", ptrs->key);
-		ptrs->player_x++;
-	}
-	if (ptrs->map[ptrs->player_y][ptrs->player_x] == '1')
-	{
-		ptrs->player_x = ptrs->prev_x;
-		ptrs->player_y = ptrs->prev_y;
-	}
-	else
-	{
-		ptrs->map[ptrs->prev_y][ptrs->prev_x] = '0';
-		//ptrs->player_x = ptrs->dest_x;
-		//ptrs->player_y = ptrs->dest_y;
-		if (ptrs->map[ptrs->player_y][ptrs->player_x] == 'C')
-			ptrs->map[ptrs->player_y][ptrs->player_x] = '0';
-		else if (ptrs->map[ptrs->player_y][ptrs->player_x] == 'E')
-			ft_free_and_destroy(ptrs, 0, NULL);
-		ptrs->map[ptrs->player_y][ptrs->player_x] = 'P';
-	}
+		ft_free_and_destroy(p, 0, NULL);
 	return (0);
 }
 
-int	ft_on_the_map(t_mlx *ptr, int x, int y)
+int	ft_on_the_map(t_mlx *p, int x, int y)
 {
-	return (ptr->player_x + x >= 0 && ptr->player_x + x < ptr->width
-		&& ptr->player_y + y >= 0 && ptr->player_y + y < ptr->height);
+	return (p->next_x + x >= 0 && p->next_x + x < p->width
+		&& p->next_y + y >= 0 && p->next_y + y < p->height);
 }
-
-/*
-void	ft_player_direction(t_mlx *ptrs, int *frame, int w_tile, int h_tile)
-{
-	if ((ptrs->key == 65362 || ptrs->key == 119) && (h_tile > ptrs->dest_y)) // up 
-	{
-		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_up[*frame], w_tile, h_tile);
-	}
-	else if ((ptrs->key == 65364 || ptrs->key == 115) && (h_tile < ptrs->dest_y)) // down
-	{
-		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_down[*frame], w_tile, h_tile);
-	}
-	else if ((ptrs->key == 65361 || ptrs->key == 97) && (w_tile + ptrs->w > w_tile - ptrs->tile)) // left
-	{
-		ptrs->w -= 2;
-		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_left[*frame], w_tile + ptrs->w, h_tile);
-		printf("left: w'%d'\n", ptrs->w);
-	}
-	else if ((ptrs->key == 65363 || ptrs->key == 100) && (w_tile + ptrs->w < w_tile + ptrs->tile)) // right
-	{
-		ptrs->w += 2;
-		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_right[*frame], w_tile + ptrs->w, h_tile);
-		printf("right: w'%d'\n", ptrs->w);
-	}
-	else
-		mlx_put_image_to_window(ptrs->mlx, ptrs->win, ptrs->p_down[0], w_tile, h_tile);
-	//printf("dest_x:'%d'\tdest_y:'%d'\n", ptrs->dest_x * ptrs->tile, ptrs->dest_y * ptrs->tile);
-	if (w_tile + ptrs->w == ptrs->dest_x * ptrs->tile && h_tile + ptrs->h == ptrs->dest_y * ptrs->tile)
-	{
-		ptrs->map[ptrs->player_y][ptrs->player_x] = '0';
-		ptrs->player_x = ptrs->dest_x;
-		ptrs->player_y = ptrs->dest_y;
-		ptrs->map[ptrs->player_y][ptrs->player_x] = 'P';
-		ptrs->w = 0;
-		ptrs->h = 0;
-		printf("\treset! w:'%d'\tw_tile:'%d', h_tile:'%d'\n", ptrs->w, w_tile, h_tile);
-		//ptrs->key = 0;
-	}
-}
-*/

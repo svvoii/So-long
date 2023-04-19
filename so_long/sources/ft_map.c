@@ -89,7 +89,8 @@ void	ft_validating_map(t_mlx *ptrs)
 		ft_free_and_destroy(ptrs, 1, "Error: Single exit required.\n");
 	if (!ptrs->c_count)
 		ft_free_and_destroy(ptrs, 1, "Error: At least one collectable required.\n");
-
+	ptrs->next_x = ptrs->player_x;
+	ptrs->next_y = ptrs->player_y;
 	// Start to exit path validation
 }
 
