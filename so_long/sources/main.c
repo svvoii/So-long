@@ -52,56 +52,17 @@ void	ft_init_map_and_window(t_mlx *p, char *str)
 	p->mlx = mlx_init();
 	p->win = mlx_new_window(p->mlx, (p->tile * p->width), (p->tile * p->height), "Game");
 	//p->back_buf = mlx_new_window(p->mlx, (p->tile * p->width), (p->tile * p->height), "Back Buffer");
-	p->back_buf = mlx_new_image(p->mlx, (p->tile * p->width), (p->tile * p->height));
-	p->back_buf_addr = mlx_get_data_addr(p->back_buf, &(p->bpp), &(p->size_line), &(p->endian));
+	p->img.buff = mlx_new_image(p->mlx, (p->tile * p->width), (p->tile * p->height));
+	p->img.addr = mlx_get_data_addr(p->img.buff, &(p->img.bpp), &(p->img.line_len), &(p->img.endian));
 	ft_load_textures(p); // assign each sprite handle to its respective pointer
 }
 
-void	ft_load_player_frames(t_mlx *p)
+void	ft_img_pix_put(t_img *img, int x, int y, int color)
 {
-	p->p_up[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_up_00.xpm", &p->tile, &p->tile);
-	p->p_up[1] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_up_01.xpm", &p->tile, &p->tile);
-	p->p_up[2] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_up_02.xpm", &p->tile, &p->tile);
-	p->p_up[3] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_up_03.xpm", &p->tile, &p->tile);
-	p->p_up[4] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_up_04.xpm", &p->tile, &p->tile);
-	p->p_up[5] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_up_05.xpm", &p->tile, &p->tile);
-	p->p_down[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_down_00.xpm", &p->tile, &p->tile);
-	p->p_down[1] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_down_01.xpm", &p->tile, &p->tile);
-	p->p_down[2] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_down_02.xpm", &p->tile, &p->tile);
-	p->p_down[3] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_down_03.xpm", &p->tile, &p->tile);
-	p->p_down[4] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_down_04.xpm", &p->tile, &p->tile);
-	p->p_down[5] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_down_05.xpm", &p->tile, &p->tile);
-	p->p_left[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_left_00.xpm", &p->tile, &p->tile);
-	p->p_left[1] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_left_01.xpm", &p->tile, &p->tile);
-	p->p_left[2] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_left_02.xpm", &p->tile, &p->tile);
-	p->p_left[3] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_left_03.xpm", &p->tile, &p->tile);
-	p->p_left[4] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_left_04.xpm", &p->tile, &p->tile);
-	p->p_left[5] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_left_05.xpm", &p->tile, &p->tile);
-	p->p_right[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_right_00.xpm", &p->tile, &p->tile);
-	p->p_right[1] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_right_01.xpm", &p->tile, &p->tile);
-	p->p_right[2] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_right_02.xpm", &p->tile, &p->tile);
-	p->p_right[3] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_right_03.xpm", &p->tile, &p->tile);
-	p->p_right[4] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_right_04.xpm", &p->tile, &p->tile);
-	p->p_right[5] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_right_05.xpm", &p->tile, &p->tile);
-}
+	char	*pix;
 
-void	ft_load_coin_frames(t_mlx *p)
-{
-	p->collectable[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/coin_00.xpm", &p->tile, &p->tile);
-	p->collectable[1] = mlx_xpm_file_to_image(p->mlx, "./xpm/coin_01.xpm", &p->tile, &p->tile);
-	p->collectable[2] = mlx_xpm_file_to_image(p->mlx, "./xpm/coin_02.xpm", &p->tile, &p->tile);
-	p->collectable[3] = mlx_xpm_file_to_image(p->mlx, "./xpm/coin_03.xpm", &p->tile, &p->tile);
-	p->collectable[4] = mlx_xpm_file_to_image(p->mlx, "./xpm/coin_04.xpm", &p->tile, &p->tile);
-	p->collectable[5] = mlx_xpm_file_to_image(p->mlx, "./xpm/coin_05.xpm", &p->tile, &p->tile);
-}
-
-void	ft_load_textures(t_mlx *p)
-{
-	p->wall[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/wall_vines.xpm", &p->tile, &p->tile);
-	p->path[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/ground.xpm", &p->tile, &p->tile);
-	ft_load_player_frames(p);
-	ft_load_coin_frames(p);
-	p->exit[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/door_01.xpm", &p->tile, &p->tile); 
+	pix = img->addr + (y * img->line_len) + (x * (img->bpp / 8));
+	*(int *)pix = color;
 }
 
 void	ft_player_direction(t_mlx *p, int *frame, int w_tile, int h_tile)
@@ -253,4 +214,51 @@ int	ft_on_the_map(t_mlx *p, int x, int y)
 {
 	return (p->next_x + x >= 0 && p->next_x + x < p->width
 		&& p->next_y + y >= 0 && p->next_y + y < p->height);
+}
+
+void	ft_load_textures(t_mlx *p)
+{
+	p->wall[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/wall_vines.xpm", &p->tile, &p->tile);
+	p->path[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/ground.xpm", &p->tile, &p->tile);
+	ft_load_player_frames(p);
+	ft_load_coin_frames(p);
+	p->exit[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/door_01.xpm", &p->tile, &p->tile); 
+}
+
+void	ft_load_player_frames(t_mlx *p)
+{
+	p->p_up[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_up_00.xpm", &p->tile, &p->tile);
+	p->p_up[1] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_up_01.xpm", &p->tile, &p->tile);
+	p->p_up[2] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_up_02.xpm", &p->tile, &p->tile);
+	p->p_up[3] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_up_03.xpm", &p->tile, &p->tile);
+	p->p_up[4] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_up_04.xpm", &p->tile, &p->tile);
+	p->p_up[5] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_up_05.xpm", &p->tile, &p->tile);
+	p->p_down[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_down_00.xpm", &p->tile, &p->tile);
+	p->p_down[1] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_down_01.xpm", &p->tile, &p->tile);
+	p->p_down[2] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_down_02.xpm", &p->tile, &p->tile);
+	p->p_down[3] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_down_03.xpm", &p->tile, &p->tile);
+	p->p_down[4] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_down_04.xpm", &p->tile, &p->tile);
+	p->p_down[5] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_down_05.xpm", &p->tile, &p->tile);
+	p->p_left[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_left_00.xpm", &p->tile, &p->tile);
+	p->p_left[1] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_left_01.xpm", &p->tile, &p->tile);
+	p->p_left[2] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_left_02.xpm", &p->tile, &p->tile);
+	p->p_left[3] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_left_03.xpm", &p->tile, &p->tile);
+	p->p_left[4] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_left_04.xpm", &p->tile, &p->tile);
+	p->p_left[5] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_left_05.xpm", &p->tile, &p->tile);
+	p->p_right[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_right_00.xpm", &p->tile, &p->tile);
+	p->p_right[1] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_right_01.xpm", &p->tile, &p->tile);
+	p->p_right[2] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_right_02.xpm", &p->tile, &p->tile);
+	p->p_right[3] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_right_03.xpm", &p->tile, &p->tile);
+	p->p_right[4] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_right_04.xpm", &p->tile, &p->tile);
+	p->p_right[5] = mlx_xpm_file_to_image(p->mlx, "./xpm/cat_right_05.xpm", &p->tile, &p->tile);
+}
+
+void	ft_load_coin_frames(t_mlx *p)
+{
+	p->collectable[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/coin_00.xpm", &p->tile, &p->tile);
+	p->collectable[1] = mlx_xpm_file_to_image(p->mlx, "./xpm/coin_01.xpm", &p->tile, &p->tile);
+	p->collectable[2] = mlx_xpm_file_to_image(p->mlx, "./xpm/coin_02.xpm", &p->tile, &p->tile);
+	p->collectable[3] = mlx_xpm_file_to_image(p->mlx, "./xpm/coin_03.xpm", &p->tile, &p->tile);
+	p->collectable[4] = mlx_xpm_file_to_image(p->mlx, "./xpm/coin_04.xpm", &p->tile, &p->tile);
+	p->collectable[5] = mlx_xpm_file_to_image(p->mlx, "./xpm/coin_05.xpm", &p->tile, &p->tile);
 }

@@ -6,7 +6,7 @@
 /*   By: sv <sv@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 11:24:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/04/19 15:54:23 by sv               ###   ########.fr       */
+/*   Updated: 2023/04/20 13:46:00 by sv               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,20 @@
 # define C 'C'
 # define P 'P'
 
+typedef struct s_img
+{
+	void	*buff;
+	char	*addr;
+	int		bpp;
+	int		line_len;
+	int		endian;
+}	t_img;
+
 typedef struct s_mlx_ptr
 {
 	void	*mlx;
 	void	*win;
-	void	*back_buf;
-	void	*back_buf_addr;
-	int		bpp;
-	int		size_line;
-	int		endian;
+	t_img	img;
 	/* sprites handles */
 	void	*wall[FRAMES];
 	void	*path[FRAMES];
