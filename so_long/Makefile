@@ -6,7 +6,7 @@
 #    By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/02/17 17:40:09 by sbocanci          #+#    #+#              #
-#    Updated: 2023/04/11 17:57:35 by sbocanci         ###   ########.fr        #
+#    Updated: 2023/04/21 15:06:51 by sbocanci         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,9 +16,9 @@ libft = includes/libft/ft_putstr_fd.c includes/libft/ft_strlen.c includes/libft/
 	includes/libft/ft_strchr.c includes/libft/ft_strdup.c includes/libft/ft_strjoin.c \
 	includes/libft/ft_strlcpy.c includes/libft/ft_substr.c includes/libft/ft_strncmp.c \
 	includes/libft/ft_putnbr_fd.c includes/libft/ft_strrchr.c includes/libft/ft_putchar_fd.c \
-	includes/libft/ft_split.c
+	includes/libft/ft_bzero.c includes/libft/ft_memcpy.c includes/libft/ft_split.c
 
-#src = sources/main_07042023.c
+#src = sources/main_21042023.c
 src = sources/main.c sources/ft_map.c sources/ft_free_and_exit.c
 
 #src_b = bonus/checker.c bonus/execute.c bonus/get_next_line.c\

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   so_long.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sv <sv@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 11:24:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/04/20 13:46:00 by sv               ###   ########.fr       */
+/*   Updated: 2023/04/21 14:00:45 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,20 +27,20 @@
 # define C 'C'
 # define P 'P'
 
-typedef struct s_img
+typedef struct s_image
 {
-	void	*buff;
+	void	*img;
 	char	*addr;
 	int		bpp;
 	int		line_len;
 	int		endian;
-}	t_img;
+}	t_image;
 
 typedef struct s_mlx_ptr
 {
 	void	*mlx;
 	void	*win;
-	t_img	img;
+	t_image	buff;
 	/* sprites handles */
 	void	*wall[FRAMES];
 	void	*path[FRAMES];

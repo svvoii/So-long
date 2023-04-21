@@ -27,6 +27,8 @@ void	ft_collectable(t_mlx *p, int x, int y, int frame);
 void	ft_player(t_mlx *p, int x, int y, int frame);
 void	ft_reset_p(t_mlx *p);
 void	ft_set_direction(t_mlx *p, int x, int y);
+void	ft_load_player_frames(t_mlx *p);
+void	ft_load_coin_frames(t_mlx *p);
 
 int	main(int ac, char **av)
 {
@@ -52,12 +54,12 @@ void	ft_init_map_and_window(t_mlx *p, char *str)
 	p->mlx = mlx_init();
 	p->win = mlx_new_window(p->mlx, (p->tile * p->width), (p->tile * p->height), "Game");
 	//p->back_buf = mlx_new_window(p->mlx, (p->tile * p->width), (p->tile * p->height), "Back Buffer");
-	p->img.buff = mlx_new_image(p->mlx, (p->tile * p->width), (p->tile * p->height));
-	p->img.addr = mlx_get_data_addr(p->img.buff, &(p->img.bpp), &(p->img.line_len), &(p->img.endian));
+	p->buff.img = mlx_new_image(p->mlx, (p->tile * p->width), (p->tile * p->height));
+	p->buff.addr = mlx_get_data_addr(p->buff.img, &(p->buff.bpp), &(p->buff.line_len), &(p->buff.endian));
 	ft_load_textures(p); // assign each sprite handle to its respective pointer
 }
 
-void	ft_img_pix_put(t_img *img, int x, int y, int color)
+void	ft_put_pix_to_img(t_image *img, int x, int y, int color)
 {
 	char	*pix;
 
@@ -65,18 +67,114 @@ void	ft_img_pix_put(t_img *img, int x, int y, int color)
 	*(int *)pix = color;
 }
 
+void	ft_put_sprite_to_buff(void *spr, int x, int y, t_image *back_buff)
+{
+	int		pix_x;
+	int		pix_y;
+	int		pix_offset;
+	int		spr_offset;
+	int		h;
+	int		w;
+	t_image	sprite;
+
+	sprite.img = mlx_get_data_addr(spr, &sprite.bpp, &sprite.line_len, &sprite.endian);
+
+	h = -1;
+	while (++h < PIX)
+	{
+		w = -1;
+		while (++w < PIX)
+		{
+			pix_y = y + h;
+			pix_x = x + w;
+			pix_offset = (pix_y * back_buff->line_len) + (pix_x * (back_buff->bpp / 8));
+			spr_offset = (h * sprite.line_len) + (w * (sprite.bpp / 8));
+			ft_memcpy(back_buff->addr + pix_offset, sprite.img + spr_offset, back_buff->bpp / 8);
+		}
+	}
+}
+
 void	ft_player_direction(t_mlx *p, int *frame, int w_tile, int h_tile)
 {
 	if (p->key == 65362 || p->key == 119) // up
-		mlx_put_image_to_window(p->mlx, p->win, p->p_up[*frame], w_tile, h_tile);
+		ft_put_sprite_to_buff(p->p_up[*frame], w_tile, h_tile, &p->buff);
 	else if (p->key == 65364 || p->key == 115) // down
-		mlx_put_image_to_window(p->mlx, p->win, p->p_down[*frame], w_tile, h_tile);
+		ft_put_sprite_to_buff(p->p_down[*frame], w_tile, h_tile, &p->buff);
 	else if (p->key == 65361 || p->key == 97) // left 
-		mlx_put_image_to_window(p->mlx, p->win, p->p_left[*frame], w_tile, h_tile);
+		ft_put_sprite_to_buff(p->p_left[*frame], w_tile, h_tile, &p->buff);
 	else if (p->key == 65363 || p->key == 100) // right 
-		mlx_put_image_to_window(p->mlx, p->win, p->p_right[*frame], w_tile, h_tile);
+		ft_put_sprite_to_buff(p->p_right[*frame], w_tile, h_tile, &p->buff);
 	else
-		mlx_put_image_to_window(p->mlx, p->win, p->p_down[0], w_tile, h_tile);
+		ft_put_sprite_to_buff(p->p_down[0], w_tile, h_tile, &p->buff);
+	//mlx_put_image_to_window(p->mlx, p->win, p->p_down[0], w_tile, h_tile);
+}
+
+void	ft_render_back_buff_img(t_mlx *p)
+{
+	int	y;
+	int	x;
+	static int	frame;
+
+	ft_bzero(p->buff.addr, p->buff.line_len * p->height);
+	y = -1;
+	while (++y < p->height)
+	{
+		x = -1;
+		while (++x < p->width)
+		{
+			if (p->map[y][x] == '1')
+				ft_put_sprite_to_buff(p->wall[0], x * PIX, y * PIX, &p->buff);
+			else if (p->map[y][x] == '0' || p->map[y][x] == 'P')
+				ft_put_sprite_to_buff(p->path[0], x * PIX, y * PIX, &p->buff);
+			else if (p->map[y][x] == 'E')
+				ft_put_sprite_to_buff(p->exit[0], x * PIX, y * PIX, &p->buff);
+			else if (p->map[y][x] == 'C')
+				ft_put_sprite_to_buff(p->collectable[frame], x * PIX, y * PIX, &p->buff);
+			//else if (p->map[y][x] == 'P')
+			//	ft_player(p, x, y, frame);
+				//ft_player_direction(p, &frame, x * PIX, y * PIX);
+		}
+	}
+	frame = (frame + 1) % FRAMES;
+}
+
+void	ft_render_player(t_mlx *p)
+{
+	int	y;
+	int	x;
+	static int	frame;
+
+	y = -1;
+	while (++y < p->height)
+	{
+		x = -1;
+		while (++x < p->width)
+		{
+			if (p->map[y][x] == 'P')
+				ft_player(p, x, y, frame);
+				//ft_player_direction(p, &frame, x * PIX, y * PIX);
+		}
+	}
+	frame = (frame + 1) % FRAMES;
+}
+
+int	ft_draw_map(t_mlx *p)
+{
+	ft_render_back_buff_img(p);
+	ft_render_player(p);
+
+	mlx_put_image_to_window(p->mlx, p->win, p->buff.img, 0, 0);
+
+	usleep(100000);
+	return (0);
+}
+
+/*
+void	ft_player(t_mlx *p, int x, int y, int frame)
+{
+	ft_set_direction(p, x, y);
+	ft_reset_p(p);
+	ft_player_direction(p, &frame, x * PIX, y * PIX);
 }
 
 int	ft_draw_map(t_mlx *p)
@@ -84,10 +182,6 @@ int	ft_draw_map(t_mlx *p)
 	int			y;
 	int			x;
 	static int	frame;
-
-	//mlx_destroy_image(p->mlx, p->back_buf);
-	//p->back_buf = mlx_new_image(p->mlx, (p->tile * p->width), (p->tile * p->height));
-	//p->back_buf_addr = mlx_get_data_addr(p->back_buf, &(p->bpp), &(p->size_line), &(p->endian));
 
 	y = -1;
 	while (++y < p->height)
@@ -113,7 +207,7 @@ int	ft_draw_map(t_mlx *p)
 	usleep(100000);
 	return (0);
 }
-
+*/
 void	ft_player(t_mlx *p, int x, int y, int frame)
 {
 	static int	i;
@@ -200,6 +294,7 @@ void	ft_set_direction(t_mlx *p, int x, int y)
 		p->next_x = p->player_x;
 		p->next_y = p->player_y;
 	}
+	//p->key = 0;
 }
 
 int	ft_handle_input(int key, t_mlx *p)
