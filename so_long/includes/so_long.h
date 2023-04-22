@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   so_long.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sv <sv@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 11:24:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/04/21 14:00:45 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/04/22 14:23:01 by sv               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,12 @@ typedef struct s_image
 	int		endian;
 }	t_image;
 
+typedef	struct s_pos
+{
+	int	x;
+	int	y;
+}	t_pos;
+
 typedef struct s_mlx_ptr
 {
 	void	*mlx;
@@ -53,6 +59,7 @@ typedef struct s_mlx_ptr
 	/* map */
 	char	*raw;
 	char	**map;
+	char	**pix_map;
 	int		height;
 	int		width;
 	int		tile;
@@ -67,6 +74,7 @@ typedef struct s_mlx_ptr
 	int		e_x;
 	int		e_y;
 	int		key;
+	t_pos	pos;
 	/* index */
 	int		w;
 	int		h;
@@ -74,10 +82,24 @@ typedef struct s_mlx_ptr
 
 /* main.c */
 
-/* ft_map.c */
-void	ft_map_to_array(t_mlx *m, char *file_path);
+/* map_setting.c */
+void	ft_map_to_array(t_mlx *ptrs, char *file_path);
+char	*ft_copy_to_buf(int fd);
+void	ft_make_pix_map(t_mlx *p);
+void	ft_set_mem_for_pixmap(t_mlx *p);
+void	ft_fill_in_map(t_mlx *p, int w_pix, int h_pix, char c);
+/* validating_map.c */
 void	ft_validating_map(t_mlx *ptrs);
+int		ft_invalid_elements(char *raw_map);
+void	ft_map_validation(t_mlx *ptrs, int h, int w);
+/* upload_textures.c */
+void	ft_load_textures(t_mlx *p);
+void	ft_load_player_frames(t_mlx *p);
+void	ft_load_coin_frames(t_mlx *p);
 /* ft_free_and_destroy.c */
 void	ft_free_and_destroy(t_mlx *ptrs, int status, char *msg);
+void	ft_free_textures(t_mlx *ptrs);
+void	ft_destroy_img(t_mlx *p, void **img);
+void	ft_free_map(t_mlx *m);
 
 #endif

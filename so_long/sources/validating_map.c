@@ -12,61 +12,9 @@
 
 #include "../includes/so_long.h"
 
-void	ft_map_to_array(t_mlx *ptrs, char *file_path);
-char	*ft_copy_to_buf(int fd);
+void	ft_validating_map(t_mlx *ptrs);
 int		ft_invalid_elements(char *raw_map);
 void	ft_map_validation(t_mlx *ptrs, int h, int w);
-
-void	ft_map_to_array(t_mlx *ptrs, char *file_path)
-{
-	int		fd;
-	int		i;
-	int		tmp;
-
-	fd = open(file_path, O_RDONLY);
-	if (fd == -1)
-		return;
-	ptrs->raw = ft_copy_to_buf(fd);
-	close(fd);
-	ptrs->map = ft_split(ptrs->raw, '\n');
-	i = 0;
-	ptrs->width = (int)ft_strlen(ptrs->map[i]);
-	while (ptrs->map[++i])
-	{
-		tmp = (int)ft_strlen(ptrs->map[i]);
-		if (tmp != ptrs->width)
-			ft_free_and_destroy(ptrs, 1, "Map rows length error.\n");
-	}
-	ptrs->height = i;
-	ptrs->tile = PIX;
-	if (ptrs->width == ptrs->height)
-		ft_free_and_destroy(ptrs, 1, "Error: Make sure the map has rectangular shape.\n");
-}
-
-char	*ft_copy_to_buf(int fd)
-{
-	char	buff[BUFF_SIZE + 1];
-	char 	*map_str;
-	char	*tmp;
-	ssize_t	ret;
-
-	map_str = ft_strdup("");
-	ret = 1;
-	while (ret > 0)
-	{
-		ret = read(fd, buff, BUFF_SIZE);
-		buff[ret] = '\0';
-		tmp = ft_strjoin(map_str, buff);
-		free(map_str);
-		map_str = tmp;
-	}
-	if (ret == -1)
-	{
-		free(map_str);
-		return (NULL);
-	}
-	return(map_str);
-}
 
 void	ft_validating_map(t_mlx *ptrs)
 {
@@ -91,6 +39,8 @@ void	ft_validating_map(t_mlx *ptrs)
 		ft_free_and_destroy(ptrs, 1, "Error: At least one collectable required.\n");
 	ptrs->next_x = ptrs->player_x;
 	ptrs->next_y = ptrs->player_y;
+	ptrs->pos.x = ptrs->player_x * ptrs->tile;
+	ptrs->pos.y = ptrs->player_y * ptrs->tile;
 	// Start to exit path validation
 }
 
