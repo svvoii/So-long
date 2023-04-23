@@ -81,7 +81,7 @@ void	ft_make_pix_map(t_mlx *p)
 		w = -1;
 		while (++w < p->width)
 		{
-			if (p->map[h][w] == '0')
+			if (p->map[h][w] == '0' || p->map[h][w] == 'P')
 				ft_fill_in_map(p, w * PIX, h * PIX, '0');
 			else if (p->map[h][w] == 'E')
 				ft_fill_in_map(p, w * PIX, h * PIX, 'E');
