@@ -14,7 +14,7 @@
 
 void	ft_render_back_buff_img(t_mlx *p);
 void	ft_render_player(t_mlx *p);
-void	ft_set_direction(t_mlx *p, int x, int y);
+void	ft_set_direction(t_mlx *p);
 void	ft_drawing_movement(t_mlx *p, int *frame, int w_tile, int h_tile);
 void	ft_put_sprite_to_buff(void *spr, int x, int y, t_image *back_buff);
 
@@ -32,13 +32,13 @@ void	ft_render_back_buff_img(t_mlx *p)
 		while (++x < p->width)
 		{
 			if (p->map[y][x] == '0' || p->map[y][x] == 'P')
-				ft_put_sprite_to_buff(p->path[0], x * PIX, y * PIX, &p->buff);
+				ft_put_sprite_to_buff(p->sp.path[0], x * PIX, y * PIX, &p->buff);
 			else if (p->map[y][x] == '1')
-				ft_put_sprite_to_buff(p->wall[0], x * PIX, y * PIX, &p->buff);
+				ft_put_sprite_to_buff(p->sp.wall[0], x * PIX, y * PIX, &p->buff);
 			else if (p->map[y][x] == 'E')
-				ft_put_sprite_to_buff(p->exit[0], x * PIX, y * PIX, &p->buff);
+				ft_put_sprite_to_buff(p->sp.exit[0], x * PIX, y * PIX, &p->buff);
 			else if (p->map[y][x] == 'C')
-				ft_put_sprite_to_buff(p->collectable[frame], x * PIX, y * PIX, &p->buff);
+				ft_put_sprite_to_buff(p->sp.collectable[frame], x * PIX, y * PIX, &p->buff);
 		}
 	}
 	frame = (frame + 1) % FRAMES;
@@ -48,18 +48,20 @@ void	ft_render_player(t_mlx *p)
 {
 	static int	frame;
 
-	ft_set_direction(p, p->player_x, p->player_y);
+	ft_set_direction(p);
 	ft_drawing_movement(p, &frame, p->pos.x, p->pos.y);
-
+/*
 	printf("x:'%d'\ty:'%d'\t", p->pos.x, p->pos.y);
-	printf("p_x:'%d'\tp_y:'%d'\n", p->player_x, p->player_y);
-
+	printf("p_x:'%d'\tp_y:'%d'\t", p->pos.cur_x, p->pos.cur_y);
+	printf("collectables:'%d'\t", p->c_count);
+	printf("moves:'%d'\n", p->moves);
+*/
 	ft_collectable_and_exit(p);
 
 	frame = (frame + 1) % FRAMES;
 }
 
-void	ft_set_direction(t_mlx *p, int p_x, int p_y)
+void	ft_set_direction(t_mlx *p)
 {
 	int	x = p->pos.x;
 	int	y = p->pos.y;
@@ -76,22 +78,22 @@ void	ft_set_direction(t_mlx *p, int p_x, int p_y)
 		p->pos.x -= step;
 	else if ((p->key == 65363 || p->key == 100) && (p->pix_map[y][x_rt + 1] != '1' && p->pix_map[y_dn][x_rt + 1] != '1'))
 		p->pos.x += step;
-	p->player_x = p->pos.x / PIX;
-	p->player_y = p->pos.y / PIX;
+	p->pos.cur_x = p->pos.x / PIX;
+	p->pos.cur_y = p->pos.y / PIX;
 }
 
 void	ft_drawing_movement(t_mlx *p, int *frame, int w_tile, int h_tile)
 {
 	if (p->key == 65362 || p->key == 119) // up
-		ft_put_sprite_to_buff(p->p_up[*frame], w_tile, h_tile, &p->buff);
+		ft_put_sprite_to_buff(p->sp.p_up[*frame], w_tile, h_tile, &p->buff);
 	else if (p->key == 65364 || p->key == 115) // down
-		ft_put_sprite_to_buff(p->p_down[*frame], w_tile, h_tile, &p->buff);
+		ft_put_sprite_to_buff(p->sp.p_down[*frame], w_tile, h_tile, &p->buff);
 	else if (p->key == 65361 || p->key == 97) // left 
-		ft_put_sprite_to_buff(p->p_left[*frame], w_tile, h_tile, &p->buff);
+		ft_put_sprite_to_buff(p->sp.p_left[*frame], w_tile, h_tile, &p->buff);
 	else if (p->key == 65363 || p->key == 100) // right 
-		ft_put_sprite_to_buff(p->p_right[*frame], w_tile, h_tile, &p->buff);
+		ft_put_sprite_to_buff(p->sp.p_right[*frame], w_tile, h_tile, &p->buff);
 	else
-		ft_put_sprite_to_buff(p->p_down[0], w_tile, h_tile, &p->buff);
+		ft_put_sprite_to_buff(p->sp.p_down[0], w_tile, h_tile, &p->buff);
 }
 
 void	ft_put_sprite_to_buff(void *spr, int x, int y, t_image *back_buff)

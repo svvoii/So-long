@@ -12,13 +12,13 @@
 
 #include "../includes/so_long.h"
 
-void	ft_map_to_array(t_mlx *ptrs, char *file_path);
+void	ft_map_to_array(t_mlx *p, char *file_path);
 char	*ft_copy_to_buf(int fd);
 void	ft_make_pix_map(t_mlx *p);
 void	ft_set_mem_for_pixmap(t_mlx *p);
 void	ft_fill_in_map(t_mlx *p, int w_pix, int h_pix, char c);
 
-void	ft_map_to_array(t_mlx *ptrs, char *file_path)
+void	ft_map_to_array(t_mlx *p, char *file_path)
 {
 	int		fd;
 	int		i;
@@ -27,21 +27,21 @@ void	ft_map_to_array(t_mlx *ptrs, char *file_path)
 	fd = open(file_path, O_RDONLY);
 	if (fd == -1)
 		return;
-	ptrs->raw = ft_copy_to_buf(fd);
+	p->raw = ft_copy_to_buf(fd);
 	close(fd);
-	ptrs->map = ft_split(ptrs->raw, '\n');
+	p->map = ft_split(p->raw, '\n');
 	i = 0;
-	ptrs->width = (int)ft_strlen(ptrs->map[i]);
-	while (ptrs->map[++i])
+	p->width = (int)ft_strlen(p->map[i]);
+	while (p->map[++i])
 	{
-		tmp = (int)ft_strlen(ptrs->map[i]);
-		if (tmp != ptrs->width)
-			ft_free_and_destroy(ptrs, 1, "Map rows length error.\n");
+		tmp = (int)ft_strlen(p->map[i]);
+		if (tmp != p->width)
+			ft_free_and_destroy(p, 1, "Map rows length error.\n");
 	}
-	ptrs->height = i;
-	ptrs->tile = PIX;
-	if (ptrs->width == ptrs->height)
-		ft_free_and_destroy(ptrs, 1, "Error: Make sure the map has rectangular shape.\n");
+	p->height = i;
+	p->tile = PIX;
+	if (p->width == p->height)
+		ft_free_and_destroy(p, 1, "Error: Make sure the map has rectangular shape.\n");
 }
 
 char	*ft_copy_to_buf(int fd)

@@ -12,33 +12,35 @@
 
 #include "../includes/so_long.h"
 
-void	ft_validating_map(t_mlx *ptrs);
+void	ft_validating_map(t_mlx *p);
 int		ft_invalid_elements(char *raw_map);
-void	ft_map_elements_check(t_mlx *ptrs, int h, int w);
+void	ft_map_elements_check(t_mlx *p, int h, int w);
 
-void	ft_validating_map(t_mlx *ptrs)
+void	ft_validating_map(t_mlx *p)
 {
 	int	h;
 	int	w;
 
-	ptrs->w = 0;
-	ptrs->h = 0;
-	if (ft_invalid_elements(ptrs->raw))
-		ft_free_and_destroy(ptrs, 1, "Error: Invalid map elements.\n");
+	p->w = 0;
+	p->h = 0;
+	if (ft_invalid_elements(p->raw))
+		ft_free_and_destroy(p, 1, "Error: Invalid map elements.\n");
 	h = -1;
-	ptrs->key = 0;
-	ptrs->p = 0;
-	ptrs->e = 0;
-	ptrs->c_count = 0;
-	ft_map_elements_check(ptrs, h, w);
-	if (ptrs->p != 1)
-		ft_free_and_destroy(ptrs, 1, "Error: Single player required.\n");
-	if (ptrs->e != 1)
-		ft_free_and_destroy(ptrs, 1, "Error: Single exit required.\n");
-	if (!ptrs->c_count)
-		ft_free_and_destroy(ptrs, 1, "Error: At least one collectable required.\n");
-	ptrs->pos.x = ptrs->player_x * ptrs->tile;
-	ptrs->pos.y = ptrs->player_y * ptrs->tile;
+	p->key = 0;
+	p->player = 0;
+	p->exit = 0;
+	p->c_count = 0;
+	ft_map_elements_check(p, h, w);
+	if (p->player != 1)
+		ft_free_and_destroy(p, 1, "Error: Single player required.\n");
+	if (p->exit != 1)
+		ft_free_and_destroy(p, 1, "Error: Single exit required.\n");
+	if (!p->c_count)
+		ft_free_and_destroy(p, 1, "Error: At least one collectable required.\n");
+	p->pos.x = p->pos.cur_x * p->tile;
+	p->pos.y = p->pos.cur_y * p->tile;
+	p->pos.prev_x = p->pos.cur_x;
+	p->pos.prev_y = p->pos.cur_y;
 }
 
 int	ft_invalid_elements(char *raw_map)
@@ -59,31 +61,31 @@ int	ft_invalid_elements(char *raw_map)
 	return (0);
 }
 
-void	ft_map_elements_check(t_mlx *ptrs, int h, int w)
+void	ft_map_elements_check(t_mlx *p, int h, int w)
 {
-	while (++h < ptrs->height)
+	while (++h < p->height)
 	{
 		w = -1;
-		while (++w < ptrs->width)
+		while (++w < p->width)
 		{
-			if ((h == 0 || h == ptrs->height - 1) && ptrs->map[h][w] != '1')
-				ft_free_and_destroy(ptrs, 1, "Error: Make sure the map wals are complete.\n");
-			else if ((w == 0 || w == ptrs->width - 1) && ptrs->map[h][w] != '1')
-				ft_free_and_destroy(ptrs, 1, "Error: Make sure the map wals are complete.\n");
-			if (ptrs->map[h][w] == 'P')
+			if ((h == 0 || h == p->height - 1) && p->map[h][w] != '1')
+				ft_free_and_destroy(p, 1, "Error: Make sure the map wals are complete.\n");
+			else if ((w == 0 || w == p->width - 1) && p->map[h][w] != '1')
+				ft_free_and_destroy(p, 1, "Error: Make sure the map wals are complete.\n");
+			if (p->map[h][w] == 'P')
 			{
-				ptrs->player_y = h;
-				ptrs->player_x = w;
-				ptrs->p++;
+				p->pos.cur_y = h;
+				p->pos.cur_x = w;
+				p->player++;
 			}
-			else if (ptrs->map[h][w] == 'E')
+			else if (p->map[h][w] == 'E')
 			{
-				ptrs->e_y = h;
-				ptrs->e_x = w;
-				ptrs->e++;
+				p->pos.ex_y = h;
+				p->pos.ex_x = w;
+				p->exit++;
 			}
-			else if (ptrs->map[h][w] == 'C')
-				ptrs->c_count++;
+			else if (p->map[h][w] == 'C')
+				p->c_count++;
 		}
 	}
 }
