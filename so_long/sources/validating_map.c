@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_map.c                                           :+:      :+:    :+:   */
+/*   validating_map.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -14,7 +14,7 @@
 
 void	ft_validating_map(t_mlx *ptrs);
 int		ft_invalid_elements(char *raw_map);
-void	ft_map_validation(t_mlx *ptrs, int h, int w);
+void	ft_map_elements_check(t_mlx *ptrs, int h, int w);
 
 void	ft_validating_map(t_mlx *ptrs)
 {
@@ -30,18 +30,15 @@ void	ft_validating_map(t_mlx *ptrs)
 	ptrs->p = 0;
 	ptrs->e = 0;
 	ptrs->c_count = 0;
-	ft_map_validation(ptrs, h, w);
+	ft_map_elements_check(ptrs, h, w);
 	if (ptrs->p != 1)
 		ft_free_and_destroy(ptrs, 1, "Error: Single player required.\n");
 	if (ptrs->e != 1)
 		ft_free_and_destroy(ptrs, 1, "Error: Single exit required.\n");
 	if (!ptrs->c_count)
 		ft_free_and_destroy(ptrs, 1, "Error: At least one collectable required.\n");
-	ptrs->next_x = ptrs->player_x;
-	ptrs->next_y = ptrs->player_y;
 	ptrs->pos.x = ptrs->player_x * ptrs->tile;
 	ptrs->pos.y = ptrs->player_y * ptrs->tile;
-	// Start to exit path validation
 }
 
 int	ft_invalid_elements(char *raw_map)
@@ -51,18 +48,18 @@ int	ft_invalid_elements(char *raw_map)
 	i = -1;
 	while(raw_map[++i])
 	{
-		if (raw_map[i] != W // 49
-			&& raw_map[i] != G // 48
-			&& raw_map[i] != P // 80
-			&& raw_map[i] != E // 69
-			&& raw_map[i] != C // 67
-			&& raw_map[i] != '\n')// 10
+		if (raw_map[i] != W
+			&& raw_map[i] != G
+			&& raw_map[i] != P
+			&& raw_map[i] != E
+			&& raw_map[i] != C
+			&& raw_map[i] != '\n')
 			return (1);
 	}
 	return (0);
 }
 
-void	ft_map_validation(t_mlx *ptrs, int h, int w)
+void	ft_map_elements_check(t_mlx *ptrs, int h, int w)
 {
 	while (++h < ptrs->height)
 	{
