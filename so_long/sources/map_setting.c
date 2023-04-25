@@ -29,6 +29,7 @@ void	ft_map_to_array(t_mlx *p, char *file_path)
 		return;
 	p->raw = ft_copy_to_buf(fd);
 	close(fd);
+	p->pix_map = NULL;
 	p->map = ft_split(p->raw, '\n');
 	i = 0;
 	p->width = (int)ft_strlen(p->map[i]);
@@ -101,10 +102,14 @@ void	ft_set_mem_for_pixmap(t_mlx *p)
 	height = (p->height * PIX);
 	width = (p->width * PIX);
 	p->pix_map = (char **)malloc(sizeof(char *) * height);
+	if (!p->pix_map)
+		ft_free_and_destroy(p, 1, "Malloc error.\n");
 	i = -1;
 	while (++i < height)
 	{
 		p->pix_map[i] = (char *)malloc(sizeof(char) * width);
+		if (!p->pix_map[i])
+			ft_free_and_destroy(p, 1, "Malloc error.\n");
 		j = -1;
 		while (++j < width - 1)
 			p->pix_map[i][j] = '1';

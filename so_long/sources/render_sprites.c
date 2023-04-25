@@ -56,7 +56,7 @@ void	ft_render_player(t_mlx *p)
 	printf("collectables:'%d'\t", p->c_count);
 	printf("moves:'%d'\n", p->moves);
 */
-	ft_collectable_and_exit(p);
+	ft_collect_and_exit(p);
 
 	frame = (frame + 1) % FRAMES;
 }

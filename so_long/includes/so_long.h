@@ -14,6 +14,7 @@
 # define SO_LONG_H
 
 # include <stdio.h>
+# include <stdbool.h>
 # include "libft.h"
 # include "mlx/mlx.h"
 # include "mlx/mlx_int.h"
@@ -26,6 +27,19 @@
 # define E 'E'
 # define C 'C'
 # define P 'P'
+
+typedef	struct s_bfs
+{
+	bool	**visited;
+	int		*queue_x;
+	int		*queue_y;
+	int		fr;
+	int		rr;
+	int		x;
+	int		y;
+	int		next_x;
+	int		next_y;
+}	t_bfs;
 
 typedef struct s_image
 {
@@ -82,16 +96,14 @@ typedef struct s_mlx_ptr
 	int		exit;
 	int		key;
 	t_pos	pos;
-	/* index */
-	int		w;
-	int		h;
 }	t_mlx;
 
 /* main.c */
 void	ft_init_map_and_window(t_mlx *p, char *str);
-int		ft_draw_map(t_mlx *p);
 int		ft_handle_input(int key, t_mlx *p);
-void	ft_collectable_and_exit(t_mlx *p);
+int		ft_handle_on_destroy(t_mlx *p);
+int		ft_draw_map(t_mlx *p);
+void	ft_collect_and_exit(t_mlx *p);
 /* map_setting.c */
 void	ft_map_to_array(t_mlx *p, char *file_path);
 char	*ft_copy_to_buf(int fd);
@@ -99,9 +111,14 @@ void	ft_make_pix_map(t_mlx *p);
 void	ft_set_mem_for_pixmap(t_mlx *p);
 void	ft_fill_in_map(t_mlx *p, int w_pix, int h_pix, char c);
 /* validating_map.c */
+void	ft_set_values(t_mlx *p);
 void	ft_validating_map(t_mlx *p);
 int		ft_invalid_elements(char *raw_map);
 void	ft_map_elements_check(t_mlx *p, int h, int w);
+
+bool	ft_bfs(t_mlx *p, t_bfs *bfs);
+void	ft_free_bfs(t_mlx *p, t_bfs *bfs);
+
 /* upload_sprites.c */
 void	ft_load_textures(t_mlx *p);
 void	ft_load_player_frames(t_mlx *p);

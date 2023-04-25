@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 13:21:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/04/24 17:08:18 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/04/25 15:36:53 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,12 @@ void	ft_free_map(t_mlx *p)
 		free(p->map[i++]);
 	free(p->map[i]);
 	free(p->map);
-	i = -1;
-	while (++i < p->height * PIX)
-		free(p->pix_map[i]);
-	free(p->pix_map);
+	if (p->pix_map)
+	{
+		i = -1;
+		while (++i < p->height * PIX)
+			if (p->pix_map[i])
+				free(p->pix_map[i]);
+		free(p->pix_map);
+	}
 }
