@@ -6,7 +6,7 @@
 #    By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/02/17 17:40:09 by sbocanci          #+#    #+#              #
-#    Updated: 2023/04/24 12:58:23 by sbocanci         ###   ########.fr        #
+#    Updated: 2023/04/26 16:05:57 by sbocanci         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,8 @@ libft = includes/libft/ft_putstr_fd.c includes/libft/ft_strlen.c includes/libft/
 
 #src = sources/main_21042023.c
 src = sources/main.c sources/map_setting.c sources/validating_map.c sources/upload_sprites.c \
-	sources/free_and_exit.c sources/render_sprites.c
+	sources/free_and_exit.c sources/render_sprites.c sources/bfs.c \
+	sources/bonus_enemy.c
 
 #src_b = bonus/checker.c bonus/execute.c bonus/get_next_line.c\
 	sources/push_swap.c sources/stack.c sources/stack_instructions.c

@@ -28,17 +28,25 @@
 # define C 'C'
 # define P 'P'
 
+typedef struct s_enemy
+{
+	int	x;
+	int	y;
+}	t_enemy;
+
 typedef	struct s_bfs
 {
 	bool	**visited;
 	int		*queue_x;
 	int		*queue_y;
+	int		vect_x[4];
+	int		vect_y[4];
 	int		fr;
 	int		rr;
 	int		x;
 	int		y;
-	int		next_x;
-	int		next_y;
+	int		nxt_x;
+	int		nxt_y;
 }	t_bfs;
 
 typedef struct s_image
@@ -65,14 +73,14 @@ typedef	struct s_pos
 typedef struct s_sprites
 {
 	/* sprites handles */
-	void	*wall[FRAMES];
-	void	*path[FRAMES];
-	void	*p_up[FRAMES];
-	void	*p_down[FRAMES];
-	void	*p_left[FRAMES];
-	void	*p_right[FRAMES];
-	void	*collectable[FRAMES];
-	void	*exit[FRAMES];
+	void	*w[FRAMES];
+	void	*p[FRAMES];
+	void	*up[FRAMES];
+	void	*dn[FRAMES];
+	void	*lt[FRAMES];
+	void	*rt[FRAMES];
+	void	*c[FRAMES];
+	void	*e[FRAMES];
 	void	*uh[FRAMES];
 }	t_spr;
 
@@ -81,14 +89,14 @@ typedef struct s_mlx_ptr
 	void	*mlx;
 	void	*win;
 	t_spr	sp;
-	t_image	buff;
+	t_image	bf;
 	/* map */
 	char	*raw;
 	char	**map;
 	char	**pix_map;
 	int		height;
 	int		width;
-	int		tile;
+	int		t;
 	/* game elements */
 	int		moves;
 	int		c_count;
@@ -115,10 +123,6 @@ void	ft_set_values(t_mlx *p);
 void	ft_validating_map(t_mlx *p);
 int		ft_invalid_elements(char *raw_map);
 void	ft_map_elements_check(t_mlx *p, int h, int w);
-
-bool	ft_bfs(t_mlx *p, t_bfs *bfs);
-void	ft_free_bfs(t_mlx *p, t_bfs *bfs);
-
 /* upload_sprites.c */
 void	ft_load_textures(t_mlx *p);
 void	ft_load_player_frames(t_mlx *p);
@@ -134,5 +138,17 @@ void	ft_render_player(t_mlx *p);
 void	ft_set_direction(t_mlx *p);
 void	ft_drawing_movement(t_mlx *p, int *frame, int w_tile, int h_tile);
 void	ft_put_sprite_to_buff(void *spr, int x, int y, t_image *back_buff);
+/* bfs.c */
+bool	ft_bfs(t_mlx *p, t_bfs *bfs);
+bool	ft_bfs_search(t_mlx *p, t_bfs *bfs);
+bool	valid(t_mlx *p, int x, int y);
+void	*ft_malloc_bfs(t_mlx *p, t_bfs *bfs);
+void	ft_free_bfs(t_mlx *p, t_bfs *bfs);
+/* bonus_enemy.c */
+void	place_enemy(t_mlx *p, t_enemy *enemy);
+int		valid_tile(t_mlx *p, int x, int y);
+int		insert_enemy(t_mlx *p);
+void	render_enemy(t_mlx *p);
+void	drawing_enemy(t_mlx *p, int w_tile, int h_tile);
 
 #endif

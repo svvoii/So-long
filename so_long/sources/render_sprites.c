@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 13:21:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/03/30 14:54:27by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/04/26 14:53:13 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@ void	ft_put_sprite_to_buff(void *spr, int x, int y, t_image *back_buff);
 
 void	ft_render_back_buff_img(t_mlx *p)
 {
-	int	y;
-	int	x;
+	int			y;
+	int			x;
 	static int	frame;
 
-	ft_bzero(p->buff.addr, p->buff.line_len * p->height);
+	ft_bzero(p->bf.addr, p->bf.line_len * p->height);
 	y = -1;
 	while (++y < p->height)
 	{
@@ -32,13 +32,13 @@ void	ft_render_back_buff_img(t_mlx *p)
 		while (++x < p->width)
 		{
 			if (p->map[y][x] == '0' || p->map[y][x] == 'P')
-				ft_put_sprite_to_buff(p->sp.path[0], x * PIX, y * PIX, &p->buff);
+				ft_put_sprite_to_buff(p->sp.p[0], x * PIX, y * PIX, &p->bf);
 			else if (p->map[y][x] == '1')
-				ft_put_sprite_to_buff(p->sp.wall[0], x * PIX, y * PIX, &p->buff);
+				ft_put_sprite_to_buff(p->sp.w[0], x * PIX, y * PIX, &p->bf);
 			else if (p->map[y][x] == 'E')
-				ft_put_sprite_to_buff(p->sp.exit[0], x * PIX, y * PIX, &p->buff);
+				ft_put_sprite_to_buff(p->sp.e[0], x * PIX, y * PIX, &p->bf);
 			else if (p->map[y][x] == 'C')
-				ft_put_sprite_to_buff(p->sp.collectable[frame], x * PIX, y * PIX, &p->buff);
+				ft_put_sprite_to_buff(p->sp.c[frame], x * PIX, y * PIX, &p->bf);
 		}
 	}
 	frame = (frame + 1) % FRAMES;
@@ -50,33 +50,34 @@ void	ft_render_player(t_mlx *p)
 
 	ft_set_direction(p);
 	ft_drawing_movement(p, &frame, p->pos.x, p->pos.y);
-/*
-	printf("x:'%d'\ty:'%d'\t", p->pos.x, p->pos.y);
-	printf("p_x:'%d'\tp_y:'%d'\t", p->pos.cur_x, p->pos.cur_y);
-	printf("collectables:'%d'\t", p->c_count);
-	printf("moves:'%d'\n", p->moves);
-*/
 	ft_collect_and_exit(p);
-
 	frame = (frame + 1) % FRAMES;
 }
 
 void	ft_set_direction(t_mlx *p)
 {
-	int	x = p->pos.x;
-	int	y = p->pos.y;
-	int	x_rt = p->pos.x + PIX - 1;
-	int	y_dn = p->pos.y + PIX - 1;
-	int	step = 8;
+	int	x;
+	int	y;
+	int	rt;
+	int	dn;
+	int	step;
 
-	if ((p->key == 65362 || p->key == 119) 
-		&& (p->pix_map[y - 1][x] != '1' && p->pix_map[y - 1][x_rt] != '1'))
+	x = p->pos.x;
+	y = p->pos.y;
+	rt = p->pos.x + PIX - 1;
+	dn = p->pos.y + PIX - 1;
+	step = 16;
+	if ((p->key == 65362 || p->key == 119)
+		&& (p->pix_map[y - 1][x] != '1' && p->pix_map[y - 1][rt] != '1'))
 		p->pos.y -= step;
-	else if ((p->key == 65364 || p->key == 115) && (p->pix_map[y_dn + 1][x] != '1' && p->pix_map[y_dn + 1][x_rt] != '1'))
+	else if ((p->key == 65364 || p->key == 115)
+		&& (p->pix_map[dn + 1][x] != '1' && p->pix_map[dn + 1][rt] != '1'))
 		p->pos.y += step;
-	else if ((p->key == 65361 || p->key == 97) && (p->pix_map[y][x - 1] != '1' && p->pix_map[y_dn][x - 1] != '1')) 
+	else if ((p->key == 65361 || p->key == 97)
+		&& (p->pix_map[y][x - 1] != '1' && p->pix_map[dn][x - 1] != '1'))
 		p->pos.x -= step;
-	else if ((p->key == 65363 || p->key == 100) && (p->pix_map[y][x_rt + 1] != '1' && p->pix_map[y_dn][x_rt + 1] != '1'))
+	else if ((p->key == 65363 || p->key == 100)
+		&& (p->pix_map[y][rt + 1] != '1' && p->pix_map[dn][rt + 1] != '1'))
 		p->pos.x += step;
 	p->pos.cur_x = p->pos.x / PIX;
 	p->pos.cur_y = p->pos.y / PIX;
@@ -84,41 +85,36 @@ void	ft_set_direction(t_mlx *p)
 
 void	ft_drawing_movement(t_mlx *p, int *frame, int w_tile, int h_tile)
 {
-	if (p->key == 65362 || p->key == 119) // up
-		ft_put_sprite_to_buff(p->sp.p_up[*frame], w_tile, h_tile, &p->buff);
-	else if (p->key == 65364 || p->key == 115) // down
-		ft_put_sprite_to_buff(p->sp.p_down[*frame], w_tile, h_tile, &p->buff);
-	else if (p->key == 65361 || p->key == 97) // left 
-		ft_put_sprite_to_buff(p->sp.p_left[*frame], w_tile, h_tile, &p->buff);
-	else if (p->key == 65363 || p->key == 100) // right 
-		ft_put_sprite_to_buff(p->sp.p_right[*frame], w_tile, h_tile, &p->buff);
+	if (p->key == 65362 || p->key == 119)
+		ft_put_sprite_to_buff(p->sp.up[*frame], w_tile, h_tile, &p->bf);
+	else if (p->key == 65364 || p->key == 115)
+		ft_put_sprite_to_buff(p->sp.dn[*frame], w_tile, h_tile, &p->bf);
+	else if (p->key == 65361 || p->key == 97)
+		ft_put_sprite_to_buff(p->sp.lt[*frame], w_tile, h_tile, &p->bf);
+	else if (p->key == 65363 || p->key == 100)
+		ft_put_sprite_to_buff(p->sp.rt[*frame], w_tile, h_tile, &p->bf);
 	else
-		ft_put_sprite_to_buff(p->sp.p_down[0], w_tile, h_tile, &p->buff);
+		ft_put_sprite_to_buff(p->sp.dn[0], w_tile, h_tile, &p->bf);
 }
 
-void	ft_put_sprite_to_buff(void *spr, int x, int y, t_image *back_buff)
+void	ft_put_sprite_to_buff(void *sprite, int x, int y, t_image *bf)
 {
-	int		pix_x;
-	int		pix_y;
-	int		pix_offset;
-	int		spr_offset;
+	int		pix_off;
+	int		spr_off;
 	int		h;
 	int		w;
-	t_image	sprite;
+	t_image	spr;
 
-	sprite.img = mlx_get_data_addr(spr, &sprite.bpp, &sprite.line_len, &sprite.endian);
-
+	spr.img = mlx_get_data_addr(sprite, &spr.bpp, &spr.line_len, &spr.endian);
 	h = -1;
 	while (++h < PIX)
 	{
 		w = -1;
 		while (++w < PIX)
 		{
-			pix_y = y + h;
-			pix_x = x + w;
-			pix_offset = (pix_y * back_buff->line_len) + (pix_x * (back_buff->bpp / 8));
-			spr_offset = (h * sprite.line_len) + (w * (sprite.bpp / 8));
-			ft_memcpy(back_buff->addr + pix_offset, sprite.img + spr_offset, back_buff->bpp / 8);
+			pix_off = (y + h) * bf->line_len + (x + w) * (bf->bpp / 8);
+			spr_off = (h * spr.line_len) + (w * (spr.bpp / 8));
+			ft_memcpy(bf->addr + pix_off, spr.img + spr_off, bf->bpp / 8);
 		}
 	}
 }

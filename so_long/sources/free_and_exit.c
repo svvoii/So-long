@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 13:21:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/04/25 15:36:53 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/04/26 13:20:24 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,22 +28,22 @@ void	ft_free_and_destroy(t_mlx *p, int status, char *msg)
 	}
 	ft_free_map(p);
 	if (msg)
-		ft_putstr_fd(msg, 2);	
+		ft_putstr_fd(msg, 2);
 	exit(status);
 }
 
 void	ft_free_textures(t_mlx *p)
 {
-	ft_destroy_img(p, p->sp.collectable);
-	ft_destroy_img(p, p->sp.p_up);
-	ft_destroy_img(p, p->sp.p_down);
-	ft_destroy_img(p, p->sp.p_left);
-	ft_destroy_img(p, p->sp.p_right);
-	mlx_destroy_image(p->mlx, p->sp.wall[0]);
-	mlx_destroy_image(p->mlx, p->sp.path[0]);
-	mlx_destroy_image(p->mlx, p->sp.exit[0]);
+	ft_destroy_img(p, p->sp.c);
+	ft_destroy_img(p, p->sp.up);
+	ft_destroy_img(p, p->sp.dn);
+	ft_destroy_img(p, p->sp.lt);
+	ft_destroy_img(p, p->sp.rt);
+	mlx_destroy_image(p->mlx, p->sp.w[0]);
+	mlx_destroy_image(p->mlx, p->sp.p[0]);
+	mlx_destroy_image(p->mlx, p->sp.e[0]);
 	mlx_destroy_image(p->mlx, p->sp.uh[0]);
-	mlx_destroy_image(p->mlx, p->buff.img);
+	mlx_destroy_image(p->mlx, p->bf.img);
 }
 
 void	ft_destroy_img(t_mlx *p, void **img)

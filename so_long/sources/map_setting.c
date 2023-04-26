@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:43:40 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/04/03 18:29:08by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/04/26 12:34:11 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	ft_map_to_array(t_mlx *p, char *file_path)
 
 	fd = open(file_path, O_RDONLY);
 	if (fd == -1)
-		return;
+		return ;
 	p->raw = ft_copy_to_buf(fd);
 	close(fd);
 	p->pix_map = NULL;
@@ -40,15 +40,15 @@ void	ft_map_to_array(t_mlx *p, char *file_path)
 			ft_free_and_destroy(p, 1, "Map rows length error.\n");
 	}
 	p->height = i;
-	p->tile = PIX;
+	p->t = PIX;
 	if (p->width == p->height)
-		ft_free_and_destroy(p, 1, "Error: Make sure the map has rectangular shape.\n");
+		ft_free_and_destroy(p, 1, "Error: Map has to be rectangular.\n");
 }
 
 char	*ft_copy_to_buf(int fd)
 {
 	char	buff[BUFF_SIZE + 1];
-	char 	*map_str;
+	char	*map_str;
 	char	*tmp;
 	ssize_t	ret;
 
@@ -67,7 +67,7 @@ char	*ft_copy_to_buf(int fd)
 		free(map_str);
 		return (NULL);
 	}
-	return(map_str);
+	return (map_str);
 }
 
 void	ft_make_pix_map(t_mlx *p)

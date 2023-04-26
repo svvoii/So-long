@@ -26,14 +26,10 @@ int	main(int ac, char **av)
 		return(0);
 	ft_init_map_and_window(&p, av[ac - 1]);
 
-	/*int i = -1;
+	int i = -1;
 	while (p.map[++i])
-		printf("'%s'\t'%d'\twidth:'%d'\theight:'%d'\ttile:'%d'\n", p.map[i], i, p.width, p.height, p.tile);
-	*/
+		printf("'%s'\t'%d'\twidth:'%d'\theight:'%d'\tt:'%d'\n", p.map[i], i, p.width, p.height, p.t);
 		
-	//ft_make_pix_map(&p);
-
-	//mlx_hook(p.win, DestroyNotify, StructureNotifyMask, ft_handle_on_destroy, &p);
 	mlx_hook(p.win, DestroyNotify, NoEventMask, ft_handle_on_destroy, &p);
 	mlx_hook(p.win, KeyPress, KeyPressMask, ft_handle_input, &p);
 	mlx_loop_hook(p.mlx, ft_draw_map, &p);
@@ -42,30 +38,23 @@ int	main(int ac, char **av)
 
 void	ft_init_map_and_window(t_mlx *p, char *str)
 {
-	int	screen_w;
-	int	screen_h;
-
-	p->mlx = NULL;
-	p->win = NULL;
-	//p->pix_map = NULL;
-	ft_map_to_array(p, str); // opening file and storing the map data both in str and 2d arr.
-	int i = -1;
-	while (p->map[++i])
-		printf("'%s'\t'%d'\twidth:'%d'\theight:'%d'\ttile:'%d'\n", p->map[i], i, p->width, p->height, p->tile);
+	//p->mlx = NULL;
+	//p->win = NULL;
+	ft_map_to_array(p, str);
 	ft_make_pix_map(p);
 	ft_validating_map(p);
 	/* might need to add protection in case of mlx_init error */
 	p->mlx = mlx_init();
-
-	mlx_get_screen_size(p->mlx, &screen_w, &screen_h);
-	//printf("screen. w:'%d', h:'%d'\n", screen_w, screen_h);
-
-	p->win = mlx_new_window(p->mlx, (p->tile * p->width), (p->tile * p->height), "Game");
-	//mlx_set_window_position(p->mlx, p->win, (screen_w - (p->tile * p->width)) / 2, (screen_h - (p->tile * p->height)) / 2);
-
-	p->buff.img = mlx_new_image(p->mlx, (p->tile * p->width), (p->tile * p->height));
-	p->buff.addr = mlx_get_data_addr(p->buff.img, &(p->buff.bpp), &(p->buff.line_len), &(p->buff.endian));
+	p->win = mlx_new_window(p->mlx, (p->t * p->width), (p->t * p->height), "Game");
+	p->bf.img = mlx_new_image(p->mlx, (p->t * p->width), (p->t * p->height));
+	p->bf.addr = mlx_get_data_addr(p->bf.img, &(p->bf.bpp), &(p->bf.line_len), &(p->bf.endian));
 	ft_load_textures(p); // assign each sprite handle to its respective pointer
+	/* bonus part */
+	insert_enemy(p);
+	insert_enemy(p);
+	insert_enemy(p);
+	insert_enemy(p);
+	insert_enemy(p);
 }
 
 int	ft_handle_input(int key, t_mlx *p)
@@ -86,8 +75,11 @@ int	ft_draw_map(t_mlx *p)
 {
 	ft_render_back_buff_img(p);
 	ft_render_player(p);
+	
+	//insert_enemy(p);
+	render_enemy(p);
 
-	mlx_put_image_to_window(p->mlx, p->win, p->buff.img, 0, 0);
+	mlx_put_image_to_window(p->mlx, p->win, p->bf.img, 0, 0);
 
 	usleep(100000);
 	return (0);
