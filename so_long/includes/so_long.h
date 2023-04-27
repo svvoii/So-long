@@ -27,11 +27,23 @@
 # define E 'E'
 # define C 'C'
 # define P 'P'
+# define EN_COUNT 4
+# define NORTH	'N'
+# define SOUTH	'S'
+# define WEST	'W'
+# define EAST	'E'
 
 typedef struct s_enemy
 {
-	int	x;
-	int	y;
+	int		x;
+	int		y;
+	int		st_x;
+	int		st_y;
+	int		tg_x;
+	int		tg_y;
+	int		pix_x;
+	int		pix_y;
+	char	direction;
 }	t_enemy;
 
 typedef	struct s_bfs
@@ -90,6 +102,8 @@ typedef struct s_mlx_ptr
 	void	*win;
 	t_spr	sp;
 	t_image	bf;
+	t_enemy	en[EN_COUNT];
+	int		en_count;
 	/* map */
 	char	*raw;
 	char	**map;
@@ -145,7 +159,7 @@ bool	valid(t_mlx *p, int x, int y);
 void	*ft_malloc_bfs(t_mlx *p, t_bfs *bfs);
 void	ft_free_bfs(t_mlx *p, t_bfs *bfs);
 /* bonus_enemy.c */
-void	place_enemy(t_mlx *p, t_enemy *enemy);
+void	place_enemy(t_mlx *p, int i);
 int		valid_tile(t_mlx *p, int x, int y);
 int		insert_enemy(t_mlx *p);
 void	render_enemy(t_mlx *p);

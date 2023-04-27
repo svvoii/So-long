@@ -26,6 +26,9 @@ int	main(int ac, char **av)
 		return(0);
 	ft_init_map_and_window(&p, av[ac - 1]);
 
+	/* bonus part */
+	insert_enemy(&p);
+
 	int i = -1;
 	while (p.map[++i])
 		printf("'%s'\t'%d'\twidth:'%d'\theight:'%d'\tt:'%d'\n", p.map[i], i, p.width, p.height, p.t);
@@ -49,12 +52,6 @@ void	ft_init_map_and_window(t_mlx *p, char *str)
 	p->bf.img = mlx_new_image(p->mlx, (p->t * p->width), (p->t * p->height));
 	p->bf.addr = mlx_get_data_addr(p->bf.img, &(p->bf.bpp), &(p->bf.line_len), &(p->bf.endian));
 	ft_load_textures(p); // assign each sprite handle to its respective pointer
-	/* bonus part */
-	insert_enemy(p);
-	insert_enemy(p);
-	insert_enemy(p);
-	insert_enemy(p);
-	insert_enemy(p);
 }
 
 int	ft_handle_input(int key, t_mlx *p)
@@ -76,7 +73,7 @@ int	ft_draw_map(t_mlx *p)
 	ft_render_back_buff_img(p);
 	ft_render_player(p);
 	
-	//insert_enemy(p);
+	/* bonus part */
 	render_enemy(p);
 
 	mlx_put_image_to_window(p->mlx, p->win, p->bf.img, 0, 0);
