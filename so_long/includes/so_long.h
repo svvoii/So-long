@@ -27,7 +27,7 @@
 # define E 'E'
 # define C 'C'
 # define P 'P'
-# define EN_COUNT 4
+# define EN_COUNT 10
 # define NORTH	'N'
 # define SOUTH	'S'
 # define WEST	'W'
@@ -43,6 +43,8 @@ typedef struct s_enemy
 	int		tg_y;
 	int		pix_x;
 	int		pix_y;
+	int		depth;
+	int		step;
 	char	direction;
 }	t_enemy;
 
@@ -164,5 +166,8 @@ int		valid_tile(t_mlx *p, int x, int y);
 int		insert_enemy(t_mlx *p);
 void	render_enemy(t_mlx *p);
 void	drawing_enemy(t_mlx *p, int w_tile, int h_tile);
+
+void	game_over(t_mlx *p);
+void	game_stat(t_mlx *p);
 
 #endif

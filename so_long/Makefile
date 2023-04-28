@@ -6,7 +6,7 @@
 #    By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/02/17 17:40:09 by sbocanci          #+#    #+#              #
-#    Updated: 2023/04/26 16:05:57 by sbocanci         ###   ########.fr        #
+#    Updated: 2023/04/28 18:54:45 by sbocanci         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,8 @@ libft = includes/libft/ft_putstr_fd.c includes/libft/ft_strlen.c includes/libft/
 	includes/libft/ft_strchr.c includes/libft/ft_strdup.c includes/libft/ft_strjoin.c \
 	includes/libft/ft_strlcpy.c includes/libft/ft_substr.c includes/libft/ft_strncmp.c \
 	includes/libft/ft_putnbr_fd.c includes/libft/ft_strrchr.c includes/libft/ft_putchar_fd.c \
-	includes/libft/ft_bzero.c includes/libft/ft_memcpy.c includes/libft/ft_split.c
+	includes/libft/ft_bzero.c includes/libft/ft_memcpy.c includes/libft/ft_itoa.c \
+	includes/libft/ft_split.c
 
 #src = sources/main_21042023.c
 src = sources/main.c sources/map_setting.c sources/validating_map.c sources/upload_sprites.c \
