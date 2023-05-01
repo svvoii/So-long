@@ -96,6 +96,7 @@ typedef struct s_sprites
 	void	*c[FRAMES];
 	void	*e[FRAMES];
 	void	*uh[FRAMES];
+	void	*num[10];
 }	t_spr;
 
 typedef struct s_mlx_ptr

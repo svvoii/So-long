@@ -73,12 +73,13 @@ int	ft_draw_map(t_mlx *p)
 	ft_render_back_buff_img(p);
 	ft_render_player(p);
 	
+	game_stat(p);
 	/* bonus part */
 	render_enemy(p);
 
+
 	mlx_put_image_to_window(p->mlx, p->win, p->bf.img, 0, 0);
 	//mlx_string_put(p->mlx, p->win, 10 * PIX, 1 * PIX, 0xFFFFFF, "GAME OVER");
-	game_stat(p);
 	game_over(p);
 
 	usleep(100000);

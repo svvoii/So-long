@@ -220,15 +220,32 @@ int	create_trgb(int t, int r, int g, int b)
 	return (t << 24 | r << 16 | g << 8 | b);
 }
 
+void	ft_put_digit(t_mlx *p, int w_tile, int h_tile, int digit)
+{
+	ft_put_sprite_to_buff(p->sp.num[digit], w_tile, h_tile, &p->bf);
+	//mlx_string_put(p->mlx, p->win, w_tile, h_tile, 0xFFFFFF, digit);
+}
+
 void	game_stat(t_mlx *p)
 {
-	char	*moves;
-	char	*count;
+	int		d_100;
+	int		d_10;
+	int		d_1;
+	int		num;
 
-	moves = ft_itoa(p->moves);
-	count = ft_itoa(p->c_count);
-	mlx_string_put(p->mlx, p->win, 1 * PIX, ((p->height - 1) * PIX), 0xFFFFFF, moves);
-	mlx_string_put(p->mlx, p->win, 2 * PIX, ((p->height - 1) * PIX), 0xFFFFFF, count);
+	num = p->moves;
+	d_1 = num % 10;
+	d_10 = (num / 10) % 10;
+	d_100 = ((num / 10) / 10) % 10;
+	ft_put_sprite_to_buff(p->sp.num[d_100], 1 * PIX, 0, &p->bf);
+	ft_put_sprite_to_buff(p->sp.num[d_10], 2 * PIX, 0, &p->bf);
+	ft_put_sprite_to_buff(p->sp.num[d_1], 3 * PIX, 0, &p->bf);
+	printf("moves: [%d %d %d]\n", d_100, d_10, d_1);
+	d_1 = p->c_count % 10;
+	d_10 = p->c_count / 10;
+	ft_put_sprite_to_buff(p->sp.num[d_10], (p->width - 3) * PIX, 0, &p->bf);
+	ft_put_sprite_to_buff(p->sp.num[d_1], (p->width - 2) * PIX, 0, &p->bf);
+	printf("coins left: [%d %d]\n", d_10, d_1);
 }
 
 void	game_over(t_mlx *p)
@@ -236,7 +253,6 @@ void	game_over(t_mlx *p)
 	char	msg[] = "GAME OVER";
 	int	i;
 
-	//printf("trgb:'%d'\n", create_trgb(0, 255, 255, 255));
 	i = -1;
 	while (++i < EN_COUNT)
 	{
@@ -244,7 +260,7 @@ void	game_over(t_mlx *p)
 		{
 			//mlx_string_put(p->mlx, p->win, PIX, PIX, 0xFFFFFF, msg);
 			mlx_string_put(p->mlx, p->win, ((p->width - 1) / 2) * PIX, ((p->height) / 2) * PIX, create_trgb(0, 255, 255, 255), msg);
-			printf("\t\tGAME OVER\n");
+			//printf("\t\tGAME OVER\n");
 		}
 	}
 }
@@ -288,7 +304,7 @@ void	chase_player(t_mlx *p, int i)
 	player_y = p->pos.cur_y;
 	uh_x = p->en[i].x;
 	uh_y = p->en[i].y;
-	printf("chase en[%d] uh_y:'%d'->'%d'\tuh_x:'%d'->'%d'\n", i, uh_y, player_y, uh_x, player_x);
+	//printf("chase en[%d] uh_y:'%d'->'%d'\tuh_x:'%d'->'%d'\n", i, uh_y, player_y, uh_x, player_x);
 	if (uh_y > player_y) // uh bellow
 		update_enemy_pos(p, i, 'N');
 	else if (uh_y < player_y) // uh above

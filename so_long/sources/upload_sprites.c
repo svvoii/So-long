@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   upload_sprites.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sv <sv@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 13:21:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/04/26 12:01:48 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/01 12:48:29 by sv               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,15 @@
 void	ft_load_textures(t_mlx *p);
 void	ft_load_player_frames(t_mlx *p);
 void	ft_load_coin_frames(t_mlx *p);
+void	ft_load_numbers(t_mlx *p);
 
 void	ft_load_textures(t_mlx *p)
 {
 	p->sp.w[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/W.xpm", &p->t, &p->t);
-	p->sp.p[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/0.xpm", &p->t, &p->t);
+	p->sp.p[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/_0.xpm", &p->t, &p->t);
 	ft_load_player_frames(p);
 	ft_load_coin_frames(p);
+	ft_load_numbers(p);
 	p->sp.e[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/E.xpm", &p->t, &p->t);
 	p->sp.uh[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/UH.xpm", &p->t, &p->t);
 }
@@ -62,4 +64,18 @@ void	ft_load_coin_frames(t_mlx *p)
 	p->sp.c[3] = mlx_xpm_file_to_image(p->mlx, "./xpm/c03.xpm", &p->t, &p->t);
 	p->sp.c[4] = mlx_xpm_file_to_image(p->mlx, "./xpm/c04.xpm", &p->t, &p->t);
 	p->sp.c[5] = mlx_xpm_file_to_image(p->mlx, "./xpm/c05.xpm", &p->t, &p->t);
+}
+
+void	ft_load_numbers(t_mlx *p)
+{
+	p->sp.num[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/0.xpm", &p->t, &p->t);
+	p->sp.num[1] = mlx_xpm_file_to_image(p->mlx, "./xpm/1.xpm", &p->t, &p->t);
+	p->sp.num[2] = mlx_xpm_file_to_image(p->mlx, "./xpm/2.xpm", &p->t, &p->t);
+	p->sp.num[3] = mlx_xpm_file_to_image(p->mlx, "./xpm/3.xpm", &p->t, &p->t);
+	p->sp.num[4] = mlx_xpm_file_to_image(p->mlx, "./xpm/4.xpm", &p->t, &p->t);
+	p->sp.num[5] = mlx_xpm_file_to_image(p->mlx, "./xpm/5.xpm", &p->t, &p->t);
+	p->sp.num[6] = mlx_xpm_file_to_image(p->mlx, "./xpm/6.xpm", &p->t, &p->t);
+	p->sp.num[7] = mlx_xpm_file_to_image(p->mlx, "./xpm/7.xpm", &p->t, &p->t);
+	p->sp.num[8] = mlx_xpm_file_to_image(p->mlx, "./xpm/8.xpm", &p->t, &p->t);
+	p->sp.num[9] = mlx_xpm_file_to_image(p->mlx, "./xpm/9.xpm", &p->t, &p->t);
 }
