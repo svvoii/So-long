@@ -17,7 +17,8 @@ sudo apt install libx11-dev
 sudo apt install libssl-dev
 sudo apt install libbsd-dev
 ```
-This will show if X11 is installed. 
+
+this will show if X11 is installed: 
 ```
 apt search Xlib.h
 ```
@@ -25,7 +26,7 @@ apt search Xlib.h
 Another error, from the local Makefile might apper (-lmlx not found). For solution check the absolute path to mlx library in the Makefile:
 This line links the mlx library which is located in the project folder on the school machine.
 ```
-Lmlx = -L/mnt/nfs/homes/sbocanci/Documents/42cursus/So-long/so_long/includes/mlx/ -lmlx -lXext -lX11
+Lmlx = -L/mnt/nfs/homes/username/Documents/42cursus/So-long/so_long/includes/mlx/ -lmlx -lXext -lX11
 
 (@gcc -g $(flags) $(src) $(libft) $(Lmlx) -o $(NAME))
 ```
