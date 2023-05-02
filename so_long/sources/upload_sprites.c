@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   upload_sprites.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sv <sv@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 13:21:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/01 12:48:29 by sv               ###   ########.fr       */
+/*   Updated: 2023/05/02 18:52:13 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,13 @@ void	ft_load_textures(t_mlx *p);
 void	ft_load_player_frames(t_mlx *p);
 void	ft_load_coin_frames(t_mlx *p);
 void	ft_load_numbers(t_mlx *p);
+void	ft_load_you_win(t_mlx *p);
 
 void	ft_load_textures(t_mlx *p)
 {
+	int	c_h;
+	int	c_w;
+
 	p->sp.w[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/W.xpm", &p->t, &p->t);
 	p->sp.p[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/_0.xpm", &p->t, &p->t);
 	ft_load_player_frames(p);
@@ -26,6 +30,22 @@ void	ft_load_textures(t_mlx *p)
 	ft_load_numbers(p);
 	p->sp.e[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/E.xpm", &p->t, &p->t);
 	p->sp.uh[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/UH.xpm", &p->t, &p->t);
+	p->sp.ov = mlx_xpm_file_to_image(p->mlx, "./xpm/o.xpm", &p->sp.wd, &p->sp.ht);
+	ft_load_you_win(p);
+	c_h = p->height * PIX / 2;
+	c_w = p->width * PIX / 2;
+	printf("cent h:'%d', w:'%d'\tsp ht:'%d', wd:'%d'\n", c_h, c_w, p->sp.ht, p->sp.wd);
+	if (p->height * PIX > c_h + p->sp.ht && p->width * PIX > c_w + p->sp.wd)
+	{
+		p->cent_h = c_h - (p->sp.ht / 2);
+		p->cent_w = c_w - (p->sp.wd / 2);
+	}
+	else
+	{
+		p->cent_h = 0;
+		p->cent_w = 0;
+	}
+	printf("\tcent_h:'%d', cent_w:'%d'\n", p->cent_h, p->cent_w);
 }
 
 void	ft_load_player_frames(t_mlx *p)
@@ -78,4 +98,32 @@ void	ft_load_numbers(t_mlx *p)
 	p->sp.num[7] = mlx_xpm_file_to_image(p->mlx, "./xpm/7.xpm", &p->t, &p->t);
 	p->sp.num[8] = mlx_xpm_file_to_image(p->mlx, "./xpm/8.xpm", &p->t, &p->t);
 	p->sp.num[9] = mlx_xpm_file_to_image(p->mlx, "./xpm/9.xpm", &p->t, &p->t);
+}
+
+void	ft_load_you_win(t_mlx *p)
+{
+	p->sp.win[0] = mlx_xpm_file_to_image(p->mlx, "./xpm/w00.xpm", &p->t, &p->t);
+	p->sp.win[1] = mlx_xpm_file_to_image(p->mlx, "./xpm/w00.xpm", &p->t, &p->t);
+	p->sp.win[2] = mlx_xpm_file_to_image(p->mlx, "./xpm/w00.xpm", &p->t, &p->t);
+	p->sp.win[3] = mlx_xpm_file_to_image(p->mlx, "./xpm/w00.xpm", &p->t, &p->t);
+	p->sp.win[4] = mlx_xpm_file_to_image(p->mlx, "./xpm/w01.xpm", &p->t, &p->t);
+	p->sp.win[5] = mlx_xpm_file_to_image(p->mlx, "./xpm/w01.xpm", &p->t, &p->t);
+	p->sp.win[6] = mlx_xpm_file_to_image(p->mlx, "./xpm/w00.xpm", &p->t, &p->t);
+	p->sp.win[7] = mlx_xpm_file_to_image(p->mlx, "./xpm/w00.xpm", &p->t, &p->t);
+	p->sp.win[8] = mlx_xpm_file_to_image(p->mlx, "./xpm/w00.xpm", &p->t, &p->t);
+	p->sp.win[9] = mlx_xpm_file_to_image(p->mlx, "./xpm/w00.xpm", &p->t, &p->t);
+	p->sp.win[10] = mlx_xpm_file_to_image(p->mlx, "./xpm/w00.xpm", &p->t, &p->t);
+	p->sp.win[11] = mlx_xpm_file_to_image(p->mlx, "./xpm/w00.xpm", &p->t, &p->t);
+	p->sp.win[12] = mlx_xpm_file_to_image(p->mlx, "./xpm/w00.xpm", &p->t, &p->t);
+	p->sp.win[13] = mlx_xpm_file_to_image(p->mlx, "./xpm/w02.xpm", &p->t, &p->t);
+	p->sp.win[14] = mlx_xpm_file_to_image(p->mlx, "./xpm/w02.xpm", &p->t, &p->t);
+	p->sp.win[15] = mlx_xpm_file_to_image(p->mlx, "./xpm/w02.xpm", &p->t, &p->t);
+	p->sp.win[16] = mlx_xpm_file_to_image(p->mlx, "./xpm/w02.xpm", &p->t, &p->t);
+	p->sp.win[17] = mlx_xpm_file_to_image(p->mlx, "./xpm/w03.xpm", &p->t, &p->t);
+	p->sp.win[18] = mlx_xpm_file_to_image(p->mlx, "./xpm/w03.xpm", &p->t, &p->t);
+	p->sp.win[19] = mlx_xpm_file_to_image(p->mlx, "./xpm/w03.xpm", &p->t, &p->t);
+	p->sp.win[20] = mlx_xpm_file_to_image(p->mlx, "./xpm/w03.xpm", &p->t, &p->t);
+	p->sp.win[21] = mlx_xpm_file_to_image(p->mlx, "./xpm/w02.xpm", &p->t, &p->t);
+	p->sp.win[22] = mlx_xpm_file_to_image(p->mlx, "./xpm/w02.xpm", &p->t, &p->t);
+	p->sp.win[23] = mlx_xpm_file_to_image(p->mlx, "./xpm/w02.xpm", &p->t, &p->t);
 }

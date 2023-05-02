@@ -27,11 +27,7 @@
 # define E 'E'
 # define C 'C'
 # define P 'P'
-# define EN_COUNT 10
-# define NORTH	'N'
-# define SOUTH	'S'
-# define WEST	'W'
-# define EAST	'E'
+# define EN_COUNT 6
 
 typedef struct s_enemy
 {
@@ -70,6 +66,8 @@ typedef struct s_image
 	int		bpp;
 	int		line_len;
 	int		endian;
+	int		w;
+	int		h;
 }	t_image;
 
 typedef	struct s_pos
@@ -97,6 +95,10 @@ typedef struct s_sprites
 	void	*e[FRAMES];
 	void	*uh[FRAMES];
 	void	*num[10];
+	void	*win[24];
+	void	*ov;
+	int		wd;
+	int		ht;
 }	t_spr;
 
 typedef struct s_mlx_ptr
@@ -107,6 +109,9 @@ typedef struct s_mlx_ptr
 	t_image	bf;
 	t_enemy	en[EN_COUNT];
 	int		en_count;
+	int		game_over;
+	int		cent_w;
+	int		cent_h;
 	/* map */
 	char	*raw;
 	char	**map;
@@ -120,6 +125,7 @@ typedef struct s_mlx_ptr
 	int		player;
 	int		exit;
 	int		key;
+	int		ground;
 	t_pos	pos;
 }	t_mlx;
 
@@ -170,5 +176,6 @@ void	drawing_enemy(t_mlx *p, int w_tile, int h_tile);
 
 void	game_over(t_mlx *p);
 void	game_stat(t_mlx *p);
+void	calculate_coins(t_mlx *p);
 
 #endif

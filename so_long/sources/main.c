@@ -27,11 +27,13 @@ int	main(int ac, char **av)
 	ft_init_map_and_window(&p, av[ac - 1]);
 
 	/* bonus part */
-	insert_enemy(&p);
+	printf("ground:'%d'\n", p.ground);
+	if (p.ground / 3 > EN_COUNT)
+		insert_enemy(&p);
 
 	int i = -1;
 	while (p.map[++i])
-		printf("'%s'\t'%d'\twidth:'%d'\theight:'%d'\tt:'%d'\n", p.map[i], i, p.width, p.height, p.t);
+		printf("'%s'\t'%d'\twidth:'%d'\theight:'%d'\tt:'%d'\n", p.map[i], i, p.width * PIX, p.height * PIX, p.t);
 		
 	mlx_hook(p.win, DestroyNotify, NoEventMask, ft_handle_on_destroy, &p);
 	mlx_hook(p.win, KeyPress, KeyPressMask, ft_handle_input, &p);
@@ -70,43 +72,28 @@ int	ft_handle_on_destroy(t_mlx *p)
 
 int	ft_draw_map(t_mlx *p)
 {
+	static int	frame;
+
 	ft_render_back_buff_img(p);
 	ft_render_player(p);
-	
-	game_stat(p);
 	/* bonus part */
-	render_enemy(p);
+	if (p->ground / 3 > EN_COUNT)
+		render_enemy(p);
+	
+	if (p->game_over == 1)
+		mlx_put_image_to_window(p->mlx, p->win, p->sp.win[frame], p->cent_w, p->cent_h);
+	else if (p->game_over == -1)
+		mlx_put_image_to_window(p->mlx, p->win, p->sp.ov, p->cent_w, p->cent_h);
+	else
+		mlx_put_image_to_window(p->mlx, p->win, p->bf.img, 0, 0);
 
-
-	mlx_put_image_to_window(p->mlx, p->win, p->bf.img, 0, 0);
-	//mlx_string_put(p->mlx, p->win, 10 * PIX, 1 * PIX, 0xFFFFFF, "GAME OVER");
+	game_stat(p);
 	game_over(p);
 
-	usleep(100000);
+	usleep(110000);
+	//usleep(100000);
+	frame = (frame + 1) % 24;
 	return (0);
-}
-
-void	ft_collect_and_exit(t_mlx *p)
-{
-	if (p->map[p->pos.cur_y][p->pos.cur_x] == 'C')
-	{
-		p->map[p->pos.cur_y][p->pos.cur_x] = '0';
-		p->c_count--;
-	}
-	else if (p->map[p->pos.cur_y][p->pos.cur_x] == 'E')
-	{
-		if (p->c_count == 0)
-		{
-			/* to-do, make exit available */
-			ft_free_and_destroy(p, 0, NULL);
-		}
-	}
-	if (p->pos.cur_x != p->pos.prev_x || p->pos.cur_y != p->pos.prev_y)
-	{
-		p->pos.prev_x = p->pos.cur_x;
-		p->pos.prev_y = p->pos.cur_y;
-		p->moves++;
-	}
 }
 
 /*

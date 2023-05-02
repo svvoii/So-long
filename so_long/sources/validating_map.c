@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:43:40 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/04/26 12:36:44 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/02 18:42:14 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ void	ft_set_values(t_mlx *p)
 	p->pos.y = p->pos.cur_y * p->t;
 	p->pos.prev_x = p->pos.cur_x;
 	p->pos.prev_y = p->pos.cur_y;
+	p->game_over = 0;
 }
 
 void	ft_validating_map(t_mlx *p)
@@ -41,6 +42,7 @@ void	ft_validating_map(t_mlx *p)
 	p->exit = 0;
 	p->c_count = 0;
 	ft_map_elements_check(p, h, w);
+	calculate_coins(p);
 	if (p->player != 1)
 		ft_free_and_destroy(p, 1, "Error: Single player required.\n");
 	if (p->exit != 1)
@@ -95,8 +97,8 @@ void	ft_map_elements_check(t_mlx *p, int h, int w)
 				p->pos.ex_x = w;
 				p->exit++;
 			}
-			else if (p->map[h][w] == 'C')
-				p->c_count++;
+			else if (p->map[h][w] == '0')
+				p->ground++;
 		}
 	}
 }

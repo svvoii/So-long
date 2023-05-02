@@ -38,12 +38,13 @@ int	right(t_mlx *p, int rt, int y, int dn);
 
 void	game_over(t_mlx *p);
 void	game_stat(t_mlx *p);
+void	calculate_coins(t_mlx *p);
 
 int	insert_enemy(t_mlx *p)
 {
 	int		i;
 	int		tiles[3];
-	int		speed[5] = {16, 16, 8, 8, 4};
+	int		speed[5] = {16, 8, 8, 8, 4};
 	
 	p->en_count = EN_COUNT;
 	i = -1;
@@ -95,7 +96,7 @@ void	place_enemy(t_mlx *p, int i)
 			}
 		}
 	}
-	if (tile_count <= 0)
+	if (tile_count <= EN_COUNT)
 		return ;
 	srand(time(NULL));
 	rand_tile = rand() % tile_count;
@@ -212,18 +213,6 @@ void	render_enemy(t_mlx *p)
 	i = -1;
 	while (++i < p->en_count)
 		drawing_enemy(p, p->en[i].pix_x, p->en[i].pix_y);
-	game_over(p);
-}
-
-int	create_trgb(int t, int r, int g, int b)
-{
-	return (t << 24 | r << 16 | g << 8 | b);
-}
-
-void	ft_put_digit(t_mlx *p, int w_tile, int h_tile, int digit)
-{
-	ft_put_sprite_to_buff(p->sp.num[digit], w_tile, h_tile, &p->bf);
-	//mlx_string_put(p->mlx, p->win, w_tile, h_tile, 0xFFFFFF, digit);
 }
 
 void	game_stat(t_mlx *p)
@@ -240,29 +229,48 @@ void	game_stat(t_mlx *p)
 	ft_put_sprite_to_buff(p->sp.num[d_100], 1 * PIX, 0, &p->bf);
 	ft_put_sprite_to_buff(p->sp.num[d_10], 2 * PIX, 0, &p->bf);
 	ft_put_sprite_to_buff(p->sp.num[d_1], 3 * PIX, 0, &p->bf);
-	printf("moves: [%d %d %d]\n", d_100, d_10, d_1);
+	//printf("moves: [%d %d %d]\n", d_100, d_10, d_1);
+	calculate_coins(p);
 	d_1 = p->c_count % 10;
 	d_10 = p->c_count / 10;
 	ft_put_sprite_to_buff(p->sp.num[d_10], (p->width - 3) * PIX, 0, &p->bf);
 	ft_put_sprite_to_buff(p->sp.num[d_1], (p->width - 2) * PIX, 0, &p->bf);
-	printf("coins left: [%d %d]\n", d_10, d_1);
+	//printf("coins left: [%d %d]\n", d_10, d_1);
+}
+
+void	calculate_coins(t_mlx *p)
+{
+	int	x;
+	int	y;
+
+	p->c_count = 0;
+	y = -1;
+	while (++y < p->height)
+	{
+		x = -1;
+		while (++x < p->width)
+		{
+			if (p->map[y][x] == 'C')
+				p->c_count++;
+		}
+	}
 }
 
 void	game_over(t_mlx *p)
 {
-	char	msg[] = "GAME OVER";
 	int	i;
+	int	win_h;
+	int	win_w;
 
 	i = -1;
 	while (++i < EN_COUNT)
 	{
-		if (p->pos.cur_y == p->en[i].y && p->pos.cur_x == p->en[i].x)
-		{
-			//mlx_string_put(p->mlx, p->win, PIX, PIX, 0xFFFFFF, msg);
-			mlx_string_put(p->mlx, p->win, ((p->width - 1) / 2) * PIX, ((p->height) / 2) * PIX, create_trgb(0, 255, 255, 255), msg);
-			//printf("\t\tGAME OVER\n");
-		}
+		if (!p->game_over && p->pos.cur_y == p->en[i].y && p->pos.cur_x == p->en[i].x)
+			p->game_over = -1;
+		else if (!p->game_over && p->c_count == 0 && p->map[p->pos.cur_y][p->pos.cur_x] == 'E')
+			p->game_over = 1;
 	}
+	//printf("g_over:'%d'\tdent_h:'%d' cent_w:'%d'\n", p->game_over, p->cent_h, p->cent_w);
 }
 
 void	reset_direction(t_mlx *p, int i)
@@ -270,7 +278,6 @@ void	reset_direction(t_mlx *p, int i)
 	int	x;
 	int	y;
 
-	//printf(" reset en[%d] dir:'%c', x:'%d'--tg_x:'%d'\ty:'%d'--tg_y:'%d'\tst_x:'%d'--st_y:'%d'\n", i, p->en[i].direction, p->en[i].x, p->en[i].tg_x, p->en[i].y, p->en[i].tg_y, p->en[i].st_x, p->en[i].st_y);
 	if ((p->en[i].direction == 'N' || p->en[i].direction == 'S') && p->en[i].y == p->en[i].tg_y)
 	{
 		if (p->en[i].direction == 'N')
@@ -289,8 +296,28 @@ void	reset_direction(t_mlx *p, int i)
 		set_target(p, i, p->en[i].st_x, p->en[i].st_y);
 		set_start(p, i, p->en[i].x, p->en[i].y);
 	}
-	//printf(" reset en[%d] dir:'%c', x:'%d'--tg_x:'%d'\ty:'%d'--tg_y:'%d'\tst_x:'%d'--st_y:'%d'\n", i, p->en[i].direction, p->en[i].x, p->en[i].tg_x, p->en[i].y, p->en[i].tg_y, p->en[i].st_x, p->en[i].st_y);
-	//printf("OK so far\n");
+}
+
+void	move_chasing_enemy(t_mlx *p, int i, char dir)
+{
+	int	x;
+	int	y;
+	int	rt;
+	int	dn;
+
+	x = p->en[i].pix_x;
+	y = p->en[i].pix_y;
+	rt = p->en[i].pix_x + PIX - 1;
+	dn = p->en[i].pix_y + PIX - 1;
+	if ((dir == 'N') && (p->pix_map[y - 1][x] != '1' && p->pix_map[y - 1][rt] != '1'))
+		p->en[i].pix_y -= p->en[i].step;
+	else if ((dir == 'S') && (p->pix_map[dn + 1][x] != '1' && p->pix_map[dn + 1][rt] != '1'))
+		p->en[i].pix_y += p->en[i].step;
+	else if ((dir == 'W') && (p->pix_map[y][x - 1] != '1' && p->pix_map[dn][x - 1] != '1'))
+		p->en[i].pix_x -= p->en[i].step;
+	else if ((dir == 'E') && (p->pix_map[y][rt + 1] != '1' && p->pix_map[dn][rt + 1] != '1'))
+		p->en[i].pix_x += p->en[i].step;
+	update_enemy_pos(p, i, dir);
 }
 
 void	chase_player(t_mlx *p, int i)
@@ -304,50 +331,32 @@ void	chase_player(t_mlx *p, int i)
 	player_y = p->pos.cur_y;
 	uh_x = p->en[i].x;
 	uh_y = p->en[i].y;
-	//printf("chase en[%d] uh_y:'%d'->'%d'\tuh_x:'%d'->'%d'\n", i, uh_y, player_y, uh_x, player_x);
-	if (uh_y > player_y) // uh bellow
-		update_enemy_pos(p, i, 'N');
-	else if (uh_y < player_y) // uh above
-		update_enemy_pos(p, i, 'S');
-	else if (uh_x > player_x) // uh to the right
-		update_enemy_pos(p, i, 'W');
-	else if (uh_x < player_x) // uh to the left
-		update_enemy_pos(p, i, 'E');
+	if (uh_y > player_y && p->map[uh_y - 1][uh_x] != '1') // uh bellow
+		move_chasing_enemy(p, i, 'N');
+	else if (uh_y < player_y && p->map[uh_y + 1][uh_x] != '1') // uh above
+		move_chasing_enemy(p, i, 'S');
+	else if (uh_x > player_x && p->map[uh_y][uh_x - 1] != '1') // uh to the right
+		move_chasing_enemy(p, i, 'W');
+	else if (uh_x < player_x && p->map[uh_y][uh_x + 1] != '1') // uh to the left
+		move_chasing_enemy(p, i, 'E');
 }
 
-/* */
 void	update_enemy_pos(t_mlx *p, int i, char dir)
 {
 	int	rt;
 	int	dn;
-	//int	step;
 
-	//step = 4;
 	rt = p->en[i].pix_x + PIX - 1;
 	dn = p->en[i].pix_y + PIX - 1;
-	//printf("\ten. x:'%d', y:'%d'\n", p->en[i].x, p->en[i].y);
 	if (dir == 'N')
-	{
 		p->en[i].y = dn / PIX;
-		p->en[i].pix_y -= p->en[i].step;
-	}
 	else if (dir == 'S')
-	{
 		p->en[i].y = p->en[i].pix_y / PIX;
-		p->en[i].pix_y += p->en[i].step;
-	}
 	else if (dir == 'W')
-	{
 		p->en[i].x = rt / PIX;
-		p->en[i].pix_x -= p->en[i].step;
-	}
 	else if (dir == 'E')
-	{
 		p->en[i].x = p->en[i].pix_x / PIX;
-		p->en[i].pix_x += p->en[i].step;
-	}
 }
-
 
 void	drawing_enemy(t_mlx *p, int w_tile, int h_tile)
 {
