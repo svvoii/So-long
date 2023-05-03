@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   bonus_main.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 13:21:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/03 19:30:20 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/03 19:36:02 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ int	main(int ac, char **av)
 	if (ac != 2)
 		return (0);
 	ft_init_map_and_window(&p, av[ac - 1]);
+	if (p.ground / 3 > ENEMIES_COUNT)
+		insert_enemy(&p);
 	mlx_hook(p.win, DestroyNotify, NoEventMask, ft_handle_on_destroy, &p);
 	mlx_hook(p.win, KeyPress, KeyPressMask, ft_handle_input, &p);
 	mlx_loop_hook(p.mlx, ft_draw_map, &p);
@@ -39,10 +41,8 @@ void	ft_init_map_and_window(t_mlx *p, char *str)
 	ft_make_pix_map(p);
 	ft_validating_map(p);
 	p->mlx = mlx_init();
-	p->win = mlx_new_window(
-			p->mlx, (p->t * p->width), (p->t * p->height), "Game");
-	p->bf.img = mlx_new_image(
-			p->mlx, (p->t * p->width), (p->t * p->height));
+	p->win = mlx_new_window(p->mlx, (p->t * p->width), (p->t * p->height), "S");
+	p->bf.img = mlx_new_image(p->mlx, (p->t * p->width), (p->t * p->height));
 	p->bf.addr = mlx_get_data_addr(
 			p->bf.img, &(p->bf.bpp), &(p->bf.line_len), &(p->bf.endian));
 	ft_load_textures(p);
@@ -62,6 +62,8 @@ int	ft_draw_map(t_mlx *p)
 
 	ft_render_back_buff_img(p);
 	ft_render_player(p);
+	if (p->ground / 3 > ENEMIES_COUNT)
+		render_enemy(p);
 	if (p->game_over == 1)
 		mlx_put_image_to_window(
 			p->mlx, p->win, p->sp.win[frame], p->cent_w, p->cent_h);
@@ -84,13 +86,3 @@ void	ft_render_player(t_mlx *p)
 	ft_collectables(p);
 	frame = (frame + 1) % FRAMES;
 }
-
-/*
-void	ft_put_pix_to_img(t_image *img, int x, int y, int color)
-{
-	char	*pix;
-
-	pix = img->addr + (y * img->line_len) + (x * (img->bpp / 8));
-	*(int *)pix = color;
-}
-*/

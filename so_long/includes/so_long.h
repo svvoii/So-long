@@ -14,20 +14,18 @@
 # define SO_LONG_H
 
 # include <stdio.h>
-# include <stdbool.h>
+# include <stdlib.h>
 # include "libft.h"
 # include "mlx/mlx.h"
 # include "mlx/mlx_int.h"
 
 # define FRAMES 6
+# define DIGITS 10
+# define END_FRAMES 24
 # define PIX 32
 # define BUFF_SIZE 1024
-# define W '1'
-# define G '0'
-# define E 'E'
-# define C 'C'
-# define P 'P'
-# define EN_COUNT 6
+# define PLAYER_SPEED 16
+# define ENEMIES_COUNT 6
 
 typedef struct s_enemy
 {
@@ -46,7 +44,7 @@ typedef struct s_enemy
 
 typedef	struct s_bfs
 {
-	bool	**visited;
+	char	**visited;
 	int		*queue_x;
 	int		*queue_y;
 	int		vect_x[4];
@@ -80,22 +78,23 @@ typedef	struct s_pos
 	int	prev_y;
 	int	ex_x;
 	int	ex_y;
+	int	step;
 }	t_pos;
 
 typedef struct s_sprites
 {
 	/* sprites handles */
-	void	*w[FRAMES];
-	void	*p[FRAMES];
 	void	*up[FRAMES];
 	void	*dn[FRAMES];
 	void	*lt[FRAMES];
 	void	*rt[FRAMES];
 	void	*c[FRAMES];
-	void	*e[FRAMES];
-	void	*uh[FRAMES];
-	void	*num[10];
-	void	*win[24];
+	void	*num[DIGITS];
+	void	*win[END_FRAMES];
+	void	*e;
+	void	*w;
+	void	*p;
+	void	*uh;
 	void	*ov;
 	int		wd;
 	int		ht;
@@ -107,8 +106,7 @@ typedef struct s_mlx_ptr
 	void	*win;
 	t_spr	sp;
 	t_image	bf;
-	t_enemy	en[EN_COUNT];
-	int		en_count;
+	t_enemy	en[ENEMIES_COUNT];
 	int		game_over;
 	int		cent_w;
 	int		cent_h;
@@ -132,9 +130,9 @@ typedef struct s_mlx_ptr
 /* main.c */
 void	ft_init_map_and_window(t_mlx *p, char *str);
 int		ft_handle_input(int key, t_mlx *p);
-int		ft_handle_on_destroy(t_mlx *p);
 int		ft_draw_map(t_mlx *p);
 void	ft_collect_and_exit(t_mlx *p);
+void	ft_render_player(t_mlx *p);
 /* map_setting.c */
 void	ft_map_to_array(t_mlx *p, char *file_path);
 char	*ft_copy_to_buf(int fd);
@@ -150,32 +148,50 @@ void	ft_map_elements_check(t_mlx *p, int h, int w);
 void	ft_load_textures(t_mlx *p);
 void	ft_load_player_frames(t_mlx *p);
 void	ft_load_coin_frames(t_mlx *p);
+void	ft_load_numbers(t_mlx *p);
+void	ft_load_you_win(t_mlx *p);
 /* free_and_exit.c */
 void	ft_free_and_destroy(t_mlx *p, int status, char *msg);
 void	ft_free_textures(t_mlx *p);
-void	ft_destroy_img(t_mlx *p, void **img);
+void	ft_destroy_img(t_mlx *p, void **img, int frames);
 void	ft_free_map(t_mlx *m);
-/* render_sprited */
+int		ft_handle_on_destroy(t_mlx *p);
+/* render_sprites */
 void	ft_render_back_buff_img(t_mlx *p);
-void	ft_render_player(t_mlx *p);
 void	ft_set_direction(t_mlx *p);
+void	ft_update_player_pos(t_mlx *p);
 void	ft_drawing_movement(t_mlx *p, int *frame, int w_tile, int h_tile);
 void	ft_put_sprite_to_buff(void *spr, int x, int y, t_image *back_buff);
 /* bfs.c */
-bool	ft_bfs(t_mlx *p, t_bfs *bfs);
-bool	ft_bfs_search(t_mlx *p, t_bfs *bfs);
-bool	valid(t_mlx *p, int x, int y);
-void	*ft_malloc_bfs(t_mlx *p, t_bfs *bfs);
-void	ft_free_bfs(t_mlx *p, t_bfs *bfs);
-/* bonus_enemy.c */
-void	place_enemy(t_mlx *p, int i);
-int		valid_tile(t_mlx *p, int x, int y);
-int		insert_enemy(t_mlx *p);
-void	render_enemy(t_mlx *p);
-void	drawing_enemy(t_mlx *p, int w_tile, int h_tile);
-
-void	game_over(t_mlx *p);
-void	game_stat(t_mlx *p);
+int		ft_bfs(t_mlx *p, t_bfs *bfs);
+int		ft_bfs_search(t_mlx *p, t_bfs *bfs);
+int		valid(t_mlx *p, int x, int y);
+char	**ft_malloc_bfs(t_mlx *p, t_bfs *bfs);
+void	ft_free_bfs(t_mlx *p, t_bfs *bfs, char *str);
+/* helpers.c */
+void	game_statistics(t_mlx *p);
+void	moves_count(t_mlx *p);
+void	collectables_count(t_mlx *p);
 void	calculate_coins(t_mlx *p);
+void	ft_collectables(t_mlx *p);
+
+/* BONUS PART */
+/* bonus_spawn_enemies.c */
+void	insert_enemy(t_mlx *p);
+void	spawn_enemy(t_mlx *p, int i);
+int		valid_tile(t_mlx *p, int x, int y, int *t_x, int *t_y);
+void	render_enemy(t_mlx *p);
+int		valid_direction(t_mlx *p, int x, int y);
+/* bonus_set_enemy_direction.c */
+void	set_enemy_direction(t_mlx *p, int i, char axis);
+void	set_y_axis_direction(t_mlx *p, int i, int x, int y);
+void	set_x_axis_direction(t_mlx *p, int i, int x, int y);
+void	set_target(t_mlx *p, int i, int x, int y);
+/* bonus_update_enemy.c */
+void	reset_direction(t_mlx *p, int i);
+void	move_enemy(t_mlx *p, int i);
+void	chase_player(t_mlx *p, int i);
+void	move_chasing_enemy(t_mlx *p, int i, char dir);
+void	update_enemy_pos(t_mlx *p, int i, char dir);
 
 #endif

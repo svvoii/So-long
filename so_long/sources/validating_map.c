@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:43:40 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/02 18:42:14 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/03 19:27:24 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,30 @@ void	ft_map_elements_check(t_mlx *p, int h, int w);
 
 void	ft_set_values(t_mlx *p)
 {
+	int	i;
+
+	p->moves = 0;
 	p->key = 0;
 	p->pos.x = p->pos.cur_x * p->t;
 	p->pos.y = p->pos.cur_y * p->t;
 	p->pos.prev_x = p->pos.cur_x;
 	p->pos.prev_y = p->pos.cur_y;
+	p->pos.step = PLAYER_SPEED;
 	p->game_over = 0;
+	i = -1;
+	while (++i < ENEMIES_COUNT)
+	{
+		p->en[i].x = 0;
+		p->en[i].y = 0;
+		p->en[i].st_x = 0;
+		p->en[i].st_y = 0;
+		p->en[i].tg_x = 0;
+		p->en[i].tg_y = 0;
+		p->en[i].pix_x = 0;
+		p->en[i].pix_y = 0;
+		p->en[i].depth = 0;
+		p->en[i].step = 0;
+	}
 }
 
 void	ft_validating_map(t_mlx *p)
@@ -32,15 +50,15 @@ void	ft_validating_map(t_mlx *p)
 	int		h;
 	int		w;
 	t_bfs	bfs;
-	bool	bfs_ret;
 
-	bfs_ret = true;
 	if (ft_invalid_elements(p->raw))
 		ft_free_and_destroy(p, 1, "Error: Invalid map elements.\n");
 	h = -1;
+	w = -1;
 	p->player = 0;
 	p->exit = 0;
 	p->c_count = 0;
+	p->ground = 0;
 	ft_map_elements_check(p, h, w);
 	calculate_coins(p);
 	if (p->player != 1)
@@ -49,10 +67,8 @@ void	ft_validating_map(t_mlx *p)
 		ft_free_and_destroy(p, 1, "Error: Single exit required.\n");
 	if (!p->c_count)
 		ft_free_and_destroy(p, 1, "Error: At least one collectable required.\n");
-	bfs_ret = ft_bfs(p, &bfs);
-	ft_free_bfs(p, &bfs);
-	if (!bfs_ret)
-		ft_free_and_destroy(p, 1, "Error: No valid path from Player to Exit.\n");
+	if (ft_bfs(p, &bfs) == 0)
+		ft_free_bfs(p, &bfs, "Error: No valid path from Player to Exit.\n");
 	ft_set_values(p);
 }
 
@@ -63,11 +79,11 @@ int	ft_invalid_elements(char *raw_map)
 	i = -1;
 	while (raw_map[++i])
 	{
-		if (raw_map[i] != W
-			&& raw_map[i] != G
-			&& raw_map[i] != P
-			&& raw_map[i] != E
-			&& raw_map[i] != C
+		if (raw_map[i] != '1'
+			&& raw_map[i] != '0'
+			&& raw_map[i] != 'P'
+			&& raw_map[i] != 'E'
+			&& raw_map[i] != 'C'
 			&& raw_map[i] != '\n')
 			return (1);
 	}
