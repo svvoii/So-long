@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 13:21:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/03 19:28:33 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/04 21:18:45 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ int		ft_handle_on_destroy(t_mlx *p);
 
 void	ft_free_and_destroy(t_mlx *p, int status, char *msg)
 {
+	ft_free_bfs(p);
 	if (p->mlx)
 	{
 		ft_free_textures(p);

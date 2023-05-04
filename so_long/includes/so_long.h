@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 11:24:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/04 17:10:21 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/04 21:18:34 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,7 @@ typedef struct s_mlx_ptr
 	t_spr	sp;
 	t_image	bf;
 	t_enemy	en[ENEMIES_COUNT];
+	t_bfs	bfs;
 
 	int		game_over;
 	int		cent_w;
@@ -166,11 +167,11 @@ void	ft_update_player_pos(t_mlx *p);
 void	ft_drawing_movement(t_mlx *p, int *frame, int w_tile, int h_tile);
 void	ft_put_sprite_to_buff(void *spr, int x, int y, t_image *back_buff);
 /* bfs.c */
-int		ft_bfs(t_mlx *p, t_bfs *bfs);
-int		ft_bfs_search(t_mlx *p, t_bfs *bfs);
+int		ft_bfs(t_mlx *p);
+int		ft_bfs_search(t_mlx *p);
 int		valid(t_mlx *p, int x, int y);
-char	**ft_malloc_bfs(t_mlx *p, t_bfs *bfs);
-void	ft_free_bfs(t_mlx *p, t_bfs *bfs, char *str);
+char	**ft_malloc_bfs(t_mlx *p);
+void	ft_free_bfs(t_mlx *p);
 /* helpers.c */
 void	game_statistics(t_mlx *p);
 void	moves_count(t_mlx *p);

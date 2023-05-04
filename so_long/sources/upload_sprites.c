@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 13:21:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/03 18:59:06 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/04 17:57:15 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,6 @@ void	ft_load_you_win(t_mlx *p);
 
 void	ft_load_textures(t_mlx *p)
 {
-	int	c_h;
-	int	c_w;
-
 	p->sp.w = mlx_xpm_file_to_image(p->mlx, "./xpm/W.xpm", &p->t, &p->t);
 	p->sp.p = mlx_xpm_file_to_image(p->mlx, "./xpm/_0.xpm", &p->t, &p->t);
 	p->sp.e = mlx_xpm_file_to_image(p->mlx, "./xpm/E.xpm", &p->t, &p->t);
@@ -33,18 +30,14 @@ void	ft_load_textures(t_mlx *p)
 	ft_load_coin_frames(p);
 	ft_load_numbers(p);
 	ft_load_you_win(p);
-	c_h = p->height * PIX / 2;
-	c_w = p->width * PIX / 2;
-	if (p->height * PIX > c_h + p->sp.ht && p->width * PIX > c_w + p->sp.wd)
-	{
-		p->cent_h = c_h - (p->sp.ht / 2);
-		p->cent_w = c_w - (p->sp.wd / 2);
-	}
+	if (p->height * PIX > p->sp.ht * 2)
+		p->cent_h = (p->height * PIX / 2) - (p->sp.ht / 2);
 	else
-	{
 		p->cent_h = 0;
+	if (p->width * PIX > p->sp.wd * 2)
+		p->cent_w = (p->width * PIX / 2) - (p->sp.wd / 2);
+	else
 		p->cent_w = 0;
-	}
 }
 
 void	ft_load_player_frames(t_mlx *p)

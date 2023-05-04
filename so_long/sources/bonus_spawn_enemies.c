@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 13:21:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/04 16:57:52 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/04 17:42:32 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ void	spawn_enemy(t_mlx *p)
 	while (++i < ENEMIES_COUNT)
 	{
 		y = rand() % count;
-		printf("rand:'%d'\n", y);
 		p->en[i].x = tiles[y][0];
 		p->en[i].y = tiles[y][1];
 		p->map[p->en[i].y][p->en[i].x] = 'U';

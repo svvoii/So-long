@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:43:40 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/04 17:07:10 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/04 19:59:24 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,9 @@ void	ft_validating_map(t_mlx *p)
 {
 	int		h;
 	int		w;
-	t_bfs	bfs;
+	//t_bfs	bfs;
 
+	//p->bfs = &bfs;
 	if (ft_invalid_elements(p->raw))
 		ft_free_and_destroy(p, 1, "Error: Invalid map elements.\n");
 	h = -1;
@@ -67,8 +68,9 @@ void	ft_validating_map(t_mlx *p)
 		ft_free_and_destroy(p, 1, "Error: Single exit required.\n");
 	if (!p->c_count)
 		ft_free_and_destroy(p, 1, "Error: At least one collectable required.\n");
-	if (ft_bfs(p, &bfs) == 0)
-		ft_free_bfs(p, &bfs, "Error: No valid path from Player to Exit.\n");
+	if (ft_bfs(p) == 0)
+		ft_free_and_destroy(p, 1, "Error: No valid path from Player to Exit.\n");
+		//ft_free_bfs(p, &bfs, "Error: No valid path from Player to Exit.\n");
 	ft_set_values(p);
 }
 
