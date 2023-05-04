@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 13:21:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/03 18:48:28 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/04 16:57:52 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,31 +14,31 @@
 #include <time.h>
 
 void	insert_enemy(t_mlx *p);
-void	spawn_enemy(t_mlx *p, int i);
-int		valid_tile(t_mlx *p, int x, int y, int *t_x, int *t_y);
+void	spawn_enemy(t_mlx *p);
+void	save_valid_tiles(int tile[2], int x, int y, int *count);
+int		valid_tile(t_mlx *p, int x, int y);
 void	render_enemy(t_mlx *p);
-int		valid_direction(t_mlx *p, int x, int y);
 
 void	insert_enemy(t_mlx *p)
 {
 	int		i;
-	int		tiles[3];
-	int		speed[5] = {16, 8, 8, 8, 4};
+	int		deep[3];
+	int		speed[3];
 
+	deep[0] = p->height / 2;
+	deep[1] = p->height / 3;
+	deep[2] = p->height / 4;
+	speed[0] = 16;
+	speed[1] = 8;
+	speed[2] = 4;
+	spawn_enemy(p);
 	i = -1;
 	while (++i < ENEMIES_COUNT)
 	{
-		spawn_enemy(p, i);
-		p->map[p->en[i].y][p->en[i].x] = 'U';
-	}
-	tiles[0] = p->height / 2;
-	tiles[1] = p->height / 3;
-	tiles[2] = p->height / 4;
-	i = -1;
-	while (++i < ENEMIES_COUNT)
-	{
-		p->en[i].step = speed[rand() % 5];
-		p->en[i].depth = tiles[rand() % 3];
+		p->en[i].step = speed[rand() % 3];
+		p->en[i].depth = deep[rand() % 3];
+		p->en[i].pix_x = p->en[i].x * PIX;
+		p->en[i].pix_y = p->en[i].y * PIX;
 		if (i % 2 == 0)
 			set_enemy_direction(p, i, 'x');
 		else
@@ -46,11 +46,11 @@ void	insert_enemy(t_mlx *p)
 	}
 }
 
-void	spawn_enemy(t_mlx *p, int i)
+void	spawn_enemy(t_mlx *p)
 {
+	int	tiles[TMP_BUF][2];
 	int	count;
-	int	tiles_x[p->height * p->width];
-	int	tiles_y[p->height * p->width];
+	int	i;
 	int	y;
 	int	x;
 
@@ -60,28 +60,36 @@ void	spawn_enemy(t_mlx *p, int i)
 	{
 		x = -1;
 		while (++x < p->width)
-			if (valid_tile(p, x, y, &tiles_x[count], &tiles_y[count]))
-				count++;
+			if (valid_tile(p, x, y) && count < TMP_BUF)
+				save_valid_tiles(tiles[count], x, y, &count);
 	}
-	srand(time(NULL));
-	p->en[i].x = tiles_x[rand() % count];
-	p->en[i].y = tiles_y[rand() % count];
-	p->en[i].pix_x = p->en[i].x * PIX;
-	p->en[i].pix_y = p->en[i].y * PIX;
+	i = -1;
+	srand(time(NULL) * getpid());
+	while (++i < ENEMIES_COUNT)
+	{
+		y = rand() % count;
+		printf("rand:'%d'\n", y);
+		p->en[i].x = tiles[y][0];
+		p->en[i].y = tiles[y][1];
+		p->map[p->en[i].y][p->en[i].x] = 'U';
+	}
 }
 
-int	valid_tile(t_mlx *p, int x, int y, int *t_x, int *t_y)
+void	save_valid_tiles(int tile[2], int x, int y, int *count)
+{
+	tile[0] = x;
+	tile[1] = y;
+	*count += 1;
+}
+
+int	valid_tile(t_mlx *p, int x, int y)
 {
 	if ((p->map[y][x] == '0' || p->map[y][x] == 'C')
 		&& p->map[y - 1][x] != '1' && p->map[y + 1][x] != '1'
 		&& p->map[y][x - 1] != '1' && p->map[y][x + 1] != '1'
 		&& p->map[y - 1][x] != 'P' && p->map[y + 1][x] != 'P'
 		&& p->map[y][x - 1] != 'P' && p->map[y][x + 1] != 'P')
-	{
-		*t_x = x;
-		*t_y = y;
 		return (1);
-	}
 	return (0);
 }
 
@@ -99,10 +107,4 @@ void	render_enemy(t_mlx *p)
 	i = -1;
 	while (++i < ENEMIES_COUNT)
 		ft_put_sprite_to_buff(p->sp.uh, p->en[i].pix_x, p->en[i].pix_y, &p->bf);
-}
-
-int	valid_direction(t_mlx *p, int x, int y)
-{
-	return (
-		y > 0 && y < p->height && x > 0 && x < p->width && p->map[y][x] != '1');
 }

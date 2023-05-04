@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:43:40 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/04/26 12:34:11 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/04 17:06:38 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ void	ft_map_to_array(t_mlx *p, char *file_path)
 			ft_free_and_destroy(p, 1, "Map rows length error.\n");
 	}
 	p->height = i;
-	p->t = PIX;
 	if (p->width == p->height)
 		ft_free_and_destroy(p, 1, "Error: Map has to be rectangular.\n");
 }

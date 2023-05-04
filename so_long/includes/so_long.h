@@ -6,26 +6,26 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 11:24:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/04/24 15:07:17by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/04 17:10:21 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SO_LONG_H
 # define SO_LONG_H
 
-# include <stdio.h>
 # include <stdlib.h>
 # include "libft.h"
 # include "mlx/mlx.h"
 # include "mlx/mlx_int.h"
 
+# define PIX 32
 # define FRAMES 6
 # define DIGITS 10
 # define END_FRAMES 24
-# define PIX 32
 # define BUFF_SIZE 1024
 # define PLAYER_SPEED 16
 # define ENEMIES_COUNT 6
+# define TMP_BUF 256
 
 typedef struct s_enemy
 {
@@ -42,7 +42,7 @@ typedef struct s_enemy
 	char	direction;
 }	t_enemy;
 
-typedef	struct s_bfs
+typedef struct s_bfs
 {
 	char	**visited;
 	int		*queue_x;
@@ -68,7 +68,7 @@ typedef struct s_image
 	int		h;
 }	t_image;
 
-typedef	struct s_pos
+typedef struct s_pos
 {
 	int	x;
 	int	y;
@@ -81,9 +81,9 @@ typedef	struct s_pos
 	int	step;
 }	t_pos;
 
+/* sprites handles */
 typedef struct s_sprites
 {
-	/* sprites handles */
 	void	*up[FRAMES];
 	void	*dn[FRAMES];
 	void	*lt[FRAMES];
@@ -100,6 +100,9 @@ typedef struct s_sprites
 	int		ht;
 }	t_spr;
 
+/* mlx elements */
+/* map elements */
+/* game elements */
 typedef struct s_mlx_ptr
 {
 	void	*mlx;
@@ -107,17 +110,17 @@ typedef struct s_mlx_ptr
 	t_spr	sp;
 	t_image	bf;
 	t_enemy	en[ENEMIES_COUNT];
+
 	int		game_over;
 	int		cent_w;
 	int		cent_h;
-	/* map */
 	char	*raw;
 	char	**map;
 	char	**pix_map;
 	int		height;
 	int		width;
 	int		t;
-	/* game elements */
+
 	int		moves;
 	int		c_count;
 	int		player;
@@ -178,15 +181,16 @@ void	ft_collectables(t_mlx *p);
 /* BONUS PART */
 /* bonus_spawn_enemies.c */
 void	insert_enemy(t_mlx *p);
-void	spawn_enemy(t_mlx *p, int i);
-int		valid_tile(t_mlx *p, int x, int y, int *t_x, int *t_y);
+void	spawn_enemy(t_mlx *p);
+void	save_valid_tiles(int tile[2], int x, int y, int *count);
+int		valid_tile(t_mlx *p, int x, int y);
 void	render_enemy(t_mlx *p);
-int		valid_direction(t_mlx *p, int x, int y);
 /* bonus_set_enemy_direction.c */
 void	set_enemy_direction(t_mlx *p, int i, char axis);
 void	set_y_axis_direction(t_mlx *p, int i, int x, int y);
 void	set_x_axis_direction(t_mlx *p, int i, int x, int y);
 void	set_target(t_mlx *p, int i, int x, int y);
+int		valid_direction(t_mlx *p, int x, int y);
 /* bonus_update_enemy.c */
 void	reset_direction(t_mlx *p, int i);
 void	move_enemy(t_mlx *p, int i);

@@ -6,19 +6,16 @@
 #    By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/02/17 17:40:09 by sbocanci          #+#    #+#              #
-#    Updated: 2023/05/03 17:57:10 by sbocanci         ###   ########.fr        #
+#    Updated: 2023/05/03 19:57:06 by sbocanci         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = so_long
 NAME_B = so_long_bonus
 
-libft = includes/libft/ft_putstr_fd.c includes/libft/ft_strlen.c includes/libft/ft_strcat.c \
-	includes/libft/ft_strchr.c includes/libft/ft_strdup.c includes/libft/ft_strjoin.c \
-	includes/libft/ft_strlcpy.c includes/libft/ft_substr.c includes/libft/ft_strncmp.c \
-	includes/libft/ft_putnbr_fd.c includes/libft/ft_strrchr.c includes/libft/ft_putchar_fd.c \
-	includes/libft/ft_bzero.c includes/libft/ft_memcpy.c includes/libft/ft_itoa.c \
-	includes/libft/ft_split.c
+libft = includes/libft/ft_putstr_fd.c includes/libft/ft_strlen.c includes/libft/ft_strdup.c \
+	includes/libft/ft_strjoin.c includes/libft/ft_putnbr_fd.c includes/libft/ft_putchar_fd.c \
+	includes/libft/ft_bzero.c includes/libft/ft_memcpy.c includes/libft/ft_split.c
 
 src = sources/main.c sources/map_setting.c sources/validating_map.c sources/upload_sprites.c \
 	sources/free_and_exit.c sources/render_sprites.c sources/helpers.c sources/bfs.c \

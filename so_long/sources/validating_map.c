@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:43:40 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/03 19:27:24 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/04 17:07:10 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ void	ft_set_values(t_mlx *p)
 
 	p->moves = 0;
 	p->key = 0;
-	p->pos.x = p->pos.cur_x * p->t;
-	p->pos.y = p->pos.cur_y * p->t;
+	p->pos.x = p->pos.cur_x * PIX;
+	p->pos.y = p->pos.cur_y * PIX;
 	p->pos.prev_x = p->pos.cur_x;
 	p->pos.prev_y = p->pos.cur_y;
 	p->pos.step = PLAYER_SPEED;
