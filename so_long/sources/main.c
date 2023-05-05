@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 13:21:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/04 17:37:36 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/05 14:00:32 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,9 @@ void	ft_init_map_and_window(t_mlx *p, char *str)
 {
 	p->mlx = NULL;
 	p->win = NULL;
+	p->bfs.visited = NULL;
+	p->bfs.queue_x = NULL;
+	p->bfs.queue_y = NULL;
 	ft_map_to_array(p, str);
 	ft_make_pix_map(p);
 	ft_validating_map(p);

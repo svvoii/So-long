@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:43:40 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/04 19:59:24 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/05 17:44:16 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ void	ft_set_values(t_mlx *p);
 void	ft_validating_map(t_mlx *p);
 int		ft_invalid_elements(char *raw_map);
 void	ft_map_elements_check(t_mlx *p, int h, int w);
+void	calculate_map_elements(t_mlx *p, char c);
 
 void	ft_set_values(t_mlx *p)
 {
@@ -49,19 +50,16 @@ void	ft_validating_map(t_mlx *p)
 {
 	int		h;
 	int		w;
-	//t_bfs	bfs;
 
-	//p->bfs = &bfs;
 	if (ft_invalid_elements(p->raw))
 		ft_free_and_destroy(p, 1, "Error: Invalid map elements.\n");
 	h = -1;
 	w = -1;
-	p->player = 0;
-	p->exit = 0;
-	p->c_count = 0;
-	p->ground = 0;
 	ft_map_elements_check(p, h, w);
-	calculate_coins(p);
+	calculate_map_elements(p, '0');
+	calculate_map_elements(p, 'P');
+	calculate_map_elements(p, 'E');
+	printf("coins:'%d', ground:'%d', exit:'%d'\n", p->c_count, p->ground, p->exit);
 	if (p->player != 1)
 		ft_free_and_destroy(p, 1, "Error: Single player required.\n");
 	if (p->exit != 1)
@@ -70,7 +68,6 @@ void	ft_validating_map(t_mlx *p)
 		ft_free_and_destroy(p, 1, "Error: At least one collectable required.\n");
 	if (ft_bfs(p) == 0)
 		ft_free_and_destroy(p, 1, "Error: No valid path from Player to Exit.\n");
-		//ft_free_bfs(p, &bfs, "Error: No valid path from Player to Exit.\n");
 	ft_set_values(p);
 }
 
@@ -78,45 +75,72 @@ int	ft_invalid_elements(char *raw_map)
 {
 	int	i;
 
+	printf("raw map\n");
+	if (raw_map[0] != '1' && raw_map[0] != '0')
+		return (1);
 	i = -1;
 	while (raw_map[++i])
 	{
-		if (raw_map[i] != '1'
-			&& raw_map[i] != '0'
-			&& raw_map[i] != 'P'
-			&& raw_map[i] != 'E'
-			&& raw_map[i] != 'C'
-			&& raw_map[i] != '\n')
+		printf("%d ", raw_map[i]);
+		if (i > 0 && raw_map[i] == '\n' && raw_map[i - 1] == '\n')
+			return (1);
+		if (raw_map[i] != '1' && raw_map[i] != '0'
+			&& raw_map[i] != 'P' && raw_map[i] != 'E'
+			&& raw_map[i] != 'C' && raw_map[i] != '\n')
 			return (1);
 	}
+	printf("\n");
 	return (0);
 }
 
-void	ft_map_elements_check(t_mlx *p, int h, int w)
+void	ft_map_elements_check(t_mlx *p, int y, int x)
 {
-	while (++h < p->height)
+	p->player = 0;
+	p->exit = 0;
+	p->c_count = 0;
+	p->ground = 0;
+	while (++y < p->height)
 	{
-		w = -1;
-		while (++w < p->width)
+		x = -1;
+		while (++x < p->width)
 		{
-			if ((h == 0 || h == p->height - 1) && p->map[h][w] != '1')
+			if (p->map[y][x] == 'C')
+				p->c_count++;
+			if ((y == 0 || y == p->height - 1) && (x == 0 || x == p->width - 1)
+				&& (p->map[y][x] != '1' || p->map[y][x] != '0'))
+				continue;
+			if (((y == 0 || x == p->height - 1) && p->map[y][x] != '1')
+				|| ((x == 0 || x == p->width - 1) && p->map[y][x] != '1'))
 				ft_free_and_destroy(p, 1, "Error: Map wals must be complete.\n");
-			else if ((w == 0 || w == p->width - 1) && p->map[h][w] != '1')
-				ft_free_and_destroy(p, 1, "Error: Map wals must be complete.\n");
-			if (p->map[h][w] == 'P')
+		}
+	}
+}
+
+void	calculate_map_elements(t_mlx *p, char c)
+{
+	int	x;
+	int	y;
+
+	y = -1;
+	while (++y < p->height)
+	{
+		x = -1;
+		while (++x < p->width)
+		{
+			if ((y > 0 && y < p->height - 1) && c == '0' && p->map[y][x] == c)
+				p->ground++;
+			else if (c == 'E' && p->map[y][x] == c)
 			{
-				p->pos.cur_y = h;
-				p->pos.cur_x = w;
-				p->player++;
-			}
-			else if (p->map[h][w] == 'E')
-			{
-				p->pos.ex_y = h;
-				p->pos.ex_x = w;
+				p->pos.ex_y = y;
+				p->pos.ex_x = x;
 				p->exit++;
 			}
-			else if (p->map[h][w] == '0')
-				p->ground++;
+			else if (c == 'P' && p->map[y][x] == c)
+			{
+				p->pos.cur_y = y;
+				p->pos.cur_x = x;
+				p->player++;
+			}
 		}
 	}
 }

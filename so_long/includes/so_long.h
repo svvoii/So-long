@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 11:24:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/04 21:18:34 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/05 16:41:26 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,6 +148,7 @@ void	ft_set_values(t_mlx *p);
 void	ft_validating_map(t_mlx *p);
 int		ft_invalid_elements(char *raw_map);
 void	ft_map_elements_check(t_mlx *p, int h, int w);
+void	calculate_map_elements(t_mlx *p, char c);
 /* upload_sprites.c */
 void	ft_load_textures(t_mlx *p);
 void	ft_load_player_frames(t_mlx *p);
@@ -176,7 +177,6 @@ void	ft_free_bfs(t_mlx *p);
 void	game_statistics(t_mlx *p);
 void	moves_count(t_mlx *p);
 void	collectables_count(t_mlx *p);
-void	calculate_coins(t_mlx *p);
 void	ft_collectables(t_mlx *p);
 
 /* BONUS PART */

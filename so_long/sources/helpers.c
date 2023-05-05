@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 13:21:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/03 19:38:00 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/05 17:34:47 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 void	game_statistics(t_mlx *p);
 void	moves_count(t_mlx *p);
 void	collectables_count(t_mlx *p);
-void	calculate_coins(t_mlx *p);
 void	ft_collectables(t_mlx *p);
 
 /* game statistics */
@@ -69,18 +68,8 @@ void	moves_count(t_mlx *p)
 void	collectables_count(t_mlx *p)
 {
 	int	c[2];
-
-	calculate_coins(p);
-	c[0] = p->c_count / 10;
-	c[1] = p->c_count % 10;
-	ft_put_sprite_to_buff(p->sp.num[c[0]], (p->width - 3) * PIX, 0, &p->bf);
-	ft_put_sprite_to_buff(p->sp.num[c[1]], (p->width - 2) * PIX, 0, &p->bf);
-}
-
-void	calculate_coins(t_mlx *p)
-{
-	int	x;
-	int	y;
+	int y;
+	int x;
 
 	p->c_count = 0;
 	y = -1;
@@ -88,9 +77,17 @@ void	calculate_coins(t_mlx *p)
 	{
 		x = -1;
 		while (++x < p->width)
-			if (p->map[y][x] == 'C')
+		{
+			if ((y > 0 && y < p->height - 1) && p->map[y][x] == 'C')
 				p->c_count++;
+		}
 	}
+	//if (p->c_count)
+	//	calculate_map_elements(p, 'C');
+	c[0] = p->c_count / 10;
+	c[1] = p->c_count % 10;
+	ft_put_sprite_to_buff(p->sp.num[c[0]], (p->width - 3) * PIX, 0, &p->bf);
+	ft_put_sprite_to_buff(p->sp.num[c[1]], (p->width - 2) * PIX, 0, &p->bf);
 }
 
 void	ft_collectables(t_mlx *p)
