@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 11:24:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/05 16:41:26 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/06 15:13:48 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 # define END_FRAMES 24
 # define BUFF_SIZE 1024
 # define PLAYER_SPEED 16
-# define ENEMIES_COUNT 6
+# define ENEMIES_COUNT 12
 # define TMP_BUF 256
 
 typedef struct s_enemy
@@ -147,7 +147,7 @@ void	ft_fill_in_map(t_mlx *p, int w_pix, int h_pix, char c);
 void	ft_set_values(t_mlx *p);
 void	ft_validating_map(t_mlx *p);
 int		ft_invalid_elements(char *raw_map);
-void	ft_map_elements_check(t_mlx *p, int h, int w);
+void	ft_map_elements_check(t_mlx *p);
 void	calculate_map_elements(t_mlx *p, char c);
 /* upload_sprites.c */
 void	ft_load_textures(t_mlx *p);

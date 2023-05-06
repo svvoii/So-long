@@ -6,18 +6,19 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:43:40 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/05 17:44:16 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/06 14:58:27 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/so_long.h"
 
+/*
 void	ft_set_values(t_mlx *p);
 void	ft_validating_map(t_mlx *p);
 int		ft_invalid_elements(char *raw_map);
 void	ft_map_elements_check(t_mlx *p, int h, int w);
 void	calculate_map_elements(t_mlx *p, char c);
-
+*/
 void	ft_set_values(t_mlx *p)
 {
 	int	i;
@@ -48,14 +49,9 @@ void	ft_set_values(t_mlx *p)
 
 void	ft_validating_map(t_mlx *p)
 {
-	int		h;
-	int		w;
-
 	if (ft_invalid_elements(p->raw))
 		ft_free_and_destroy(p, 1, "Error: Invalid map elements.\n");
-	h = -1;
-	w = -1;
-	ft_map_elements_check(p, h, w);
+	ft_map_elements_check(p);
 	calculate_map_elements(p, '0');
 	calculate_map_elements(p, 'P');
 	calculate_map_elements(p, 'E');
@@ -93,8 +89,13 @@ int	ft_invalid_elements(char *raw_map)
 	return (0);
 }
 
-void	ft_map_elements_check(t_mlx *p, int y, int x)
+void	ft_map_elements_check(t_mlx *p)
 {
+	int		y;
+	int		x;
+
+	y = -1;
+	x = -1;
 	p->player = 0;
 	p->exit = 0;
 	p->c_count = 0;
@@ -106,11 +107,9 @@ void	ft_map_elements_check(t_mlx *p, int y, int x)
 		{
 			if (p->map[y][x] == 'C')
 				p->c_count++;
-			if ((y == 0 || y == p->height - 1) && (x == 0 || x == p->width - 1)
-				&& (p->map[y][x] != '1' || p->map[y][x] != '0'))
-				continue;
-			if (((y == 0 || x == p->height - 1) && p->map[y][x] != '1')
-				|| ((x == 0 || x == p->width - 1) && p->map[y][x] != '1'))
+			if ((y == 0 || y == p->height - 1) && p->map[y][x] != '1')
+				ft_free_and_destroy(p, 1, "Error: Map wals must be complete.\n");
+			if ((x == 0 || x == p->width - 1) && p->map[y][x] != '1')
 				ft_free_and_destroy(p, 1, "Error: Map wals must be complete.\n");
 		}
 	}

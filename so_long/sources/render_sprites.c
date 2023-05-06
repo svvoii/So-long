@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 13:21:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/03 19:32:16 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/06 15:12:03 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,13 +32,13 @@ void	ft_render_back_buff_img(t_mlx *p)
 		while (++x < p->width)
 		{
 			if (p->map[y][x] == '0' || p->map[y][x] == 'P'
-				|| p->map[y][x] == 'U')
+				|| p->map[y][x] == 'U' || p->map[y][x] == 'C' || p->map[y][x] == 'E')
 				ft_put_sprite_to_buff(p->sp.p, x * PIX, y * PIX, &p->bf);
 			else if (p->map[y][x] == '1')
 				ft_put_sprite_to_buff(p->sp.w, x * PIX, y * PIX, &p->bf);
-			else if (p->map[y][x] == 'E')
+			if (p->map[y][x] == 'E')
 				ft_put_sprite_to_buff(p->sp.e, x * PIX, y * PIX, &p->bf);
-			else if (p->map[y][x] == 'C')
+			if (p->map[y][x] == 'C')
 				ft_put_sprite_to_buff(p->sp.c[frame], x * PIX, y * PIX, &p->bf);
 		}
 	}
@@ -112,6 +112,30 @@ void	ft_put_sprite_to_buff(void *sprite, int x, int y, t_image *bf)
 	int		w;
 	t_image	spr;
 
+	spr.addr = mlx_get_data_addr(sprite, &spr.bpp, &spr.line_len, &spr.endian);
+	spr.img = (void *)spr.addr;
+	h = -1;
+	while (++h < PIX)
+	{
+		w = -1;
+		while (++w < PIX)
+		{
+			pix_off = (y + h) * bf->line_len + (x + w) * (bf->bpp / 8);
+			spr_off = (h * spr.line_len) + (w * (spr.bpp / 8));
+			if ((unsigned char)spr.addr[spr_off + 3] != 0xFF)
+				ft_memcpy(bf->addr + pix_off, spr.img + spr_off, bf->bpp / 8);
+		}
+	}
+}
+/*
+void	ft_put_sprite_to_buff(void *sprite, int x, int y, t_image *bf)
+{
+	int		pix_off;
+	int		spr_off;
+	int		h;
+	int		w;
+	t_image	spr;
+
 	spr.img = mlx_get_data_addr(sprite, &spr.bpp, &spr.line_len, &spr.endian);
 	h = -1;
 	while (++h < PIX)
@@ -125,3 +149,4 @@ void	ft_put_sprite_to_buff(void *sprite, int x, int y, t_image *bf)
 		}
 	}
 }
+*/

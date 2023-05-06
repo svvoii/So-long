@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 13:21:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/04 17:57:15 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/06 15:12:52 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	ft_load_you_win(t_mlx *p);
 void	ft_load_textures(t_mlx *p)
 {
 	p->sp.w = mlx_xpm_file_to_image(p->mlx, "./xpm/W.xpm", &p->t, &p->t);
-	p->sp.p = mlx_xpm_file_to_image(p->mlx, "./xpm/_0.xpm", &p->t, &p->t);
+	p->sp.p = mlx_xpm_file_to_image(p->mlx, "./xpm/brick.xpm", &p->t, &p->t);
 	p->sp.e = mlx_xpm_file_to_image(p->mlx, "./xpm/E.xpm", &p->t, &p->t);
 	p->sp.uh = mlx_xpm_file_to_image(p->mlx, "./xpm/UH.xpm", &p->t, &p->t);
 	p->sp.ov = mlx_xpm_file_to_image(
