@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   validating_map.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
+/*   By: svoi <svoi@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:43:40 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/06 14:58:27 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/07 10:46:10 by svoi             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 /*
 void	ft_set_values(t_mlx *p);
 void	ft_validating_map(t_mlx *p);
-int		ft_invalid_elements(char *raw_map);
+int		ft_invalid_elements(t_mlx *p);
 void	ft_map_elements_check(t_mlx *p, int h, int w);
 void	calculate_map_elements(t_mlx *p, char c);
 */
@@ -49,7 +49,7 @@ void	ft_set_values(t_mlx *p)
 
 void	ft_validating_map(t_mlx *p)
 {
-	if (ft_invalid_elements(p->raw))
+	if (ft_invalid_elements(p))
 		ft_free_and_destroy(p, 1, "Error: Invalid map elements.\n");
 	ft_map_elements_check(p);
 	calculate_map_elements(p, '0');
@@ -67,25 +67,28 @@ void	ft_validating_map(t_mlx *p)
 	ft_set_values(p);
 }
 
-int	ft_invalid_elements(char *raw_map)
+int	ft_invalid_elements(t_mlx *p)
 {
 	int	i;
 
-	printf("raw map\n");
-	if (raw_map[0] != '1' && raw_map[0] != '0')
+	p->c_count = 0;
+	p->ground = 0;
+	if (p->raw[0] != '1' && p->raw[0] != '0')
 		return (1);
 	i = -1;
-	while (raw_map[++i])
+	while (p->raw[++i])
 	{
-		printf("%d ", raw_map[i]);
-		if (i > 0 && raw_map[i] == '\n' && raw_map[i - 1] == '\n')
+		if (i > 0 && p->raw[i] == '\n' && p->raw[i - 1] == '\n')
 			return (1);
-		if (raw_map[i] != '1' && raw_map[i] != '0'
-			&& raw_map[i] != 'P' && raw_map[i] != 'E'
-			&& raw_map[i] != 'C' && raw_map[i] != '\n')
+		if (p->raw[i] != '1' && p->raw[i] != '0'
+			&& p->raw[i] != 'P' && p->raw[i] != 'E'
+			&& p->raw[i] != 'C' && p->raw[i] != '\n')
 			return (1);
+		if (p->raw[i] == 'C')
+			p->c_count++;
+		if (p->raw[i] == '0')
+			p->ground++;
 	}
-	printf("\n");
 	return (0);
 }
 
@@ -98,15 +101,11 @@ void	ft_map_elements_check(t_mlx *p)
 	x = -1;
 	p->player = 0;
 	p->exit = 0;
-	p->c_count = 0;
-	p->ground = 0;
 	while (++y < p->height)
 	{
 		x = -1;
 		while (++x < p->width)
 		{
-			if (p->map[y][x] == 'C')
-				p->c_count++;
 			if ((y == 0 || y == p->height - 1) && p->map[y][x] != '1')
 				ft_free_and_destroy(p, 1, "Error: Map wals must be complete.\n");
 			if ((x == 0 || x == p->width - 1) && p->map[y][x] != '1')

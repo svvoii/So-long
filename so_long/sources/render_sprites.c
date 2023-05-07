@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_sprites.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
+/*   By: svoi <svoi@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 13:21:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/06 15:12:03 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/07 12:51:36 by svoi             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ void	ft_render_back_buff_img(t_mlx *p)
 		while (++x < p->width)
 		{
 			if (p->map[y][x] == '0' || p->map[y][x] == 'P'
-				|| p->map[y][x] == 'U' || p->map[y][x] == 'C' || p->map[y][x] == 'E')
+			|| p->map[y][x] == 'U' || p->map[y][x] == 'C'
+			|| p->map[y][x] == 'E')
 				ft_put_sprite_to_buff(p->sp.p, x * PIX, y * PIX, &p->bf);
 			else if (p->map[y][x] == '1')
 				ft_put_sprite_to_buff(p->sp.w, x * PIX, y * PIX, &p->bf);

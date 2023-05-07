@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+         #
+#    By: svoi <svoi@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/02/17 17:40:09 by sbocanci          #+#    #+#              #
-#    Updated: 2023/05/03 19:57:06 by sbocanci         ###   ########.fr        #
+#    Updated: 2023/05/07 14:34:23 by svoi             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,6 +31,7 @@ obj_b = $(src_b:.c=.o)
 
 flags = -Wall -Wextra -Werror
 
+#Lmlx = -L/home/svoi/Documents/So-long/so_long/includes/mlx/ -lmlx -lXext -lX11
 Lmlx = -L/mnt/nfs/homes/sbocanci/Documents/42cursus/So-long/so_long/includes/mlx/ -lmlx -lXext -lX11
 
 all: $(NAME)

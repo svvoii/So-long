@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helpers.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
+/*   By: svoi <svoi@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 13:21:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/05 17:34:47 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/07 13:15:41 by svoi             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ void	game_statistics(t_mlx *p)
 	{
 		moves_count(p);
 		collectables_count(p);
-		if (p->c_count == 0 && p->map[p->pos.cur_y][p->pos.cur_x] == 'E')
+		if (p->c_count == 0 && p->pos.cur_y == p->pos.ex_y
+			&& p->pos.cur_x == p->pos.ex_x)
 			p->game_over = 1;
 	}
 	i = -1;
@@ -82,12 +83,12 @@ void	collectables_count(t_mlx *p)
 				p->c_count++;
 		}
 	}
-	//if (p->c_count)
-	//	calculate_map_elements(p, 'C');
 	c[0] = p->c_count / 10;
 	c[1] = p->c_count % 10;
-	ft_put_sprite_to_buff(p->sp.num[c[0]], (p->width - 3) * PIX, 0, &p->bf);
-	ft_put_sprite_to_buff(p->sp.num[c[1]], (p->width - 2) * PIX, 0, &p->bf);
+	ft_put_sprite_to_buff(p->sp.num[c[0]], 32, (p->height - 1) * PIX, &p->bf);
+	ft_put_sprite_to_buff(p->sp.num[c[1]], 64, (p->height - 1) * PIX, &p->bf);
+	//ft_put_sprite_to_buff(p->sp.num[c[0]], (p->width - 3) * PIX, 0, &p->bf);
+	//ft_put_sprite_to_buff(p->sp.num[c[1]], (p->width - 2) * PIX, 0, &p->bf);
 }
 
 void	ft_collectables(t_mlx *p)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   so_long.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
+/*   By: svoi <svoi@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 11:24:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/06 15:13:48 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/07 10:36:43 by svoi             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,7 @@ void	ft_fill_in_map(t_mlx *p, int w_pix, int h_pix, char c);
 /* validating_map.c */
 void	ft_set_values(t_mlx *p);
 void	ft_validating_map(t_mlx *p);
-int		ft_invalid_elements(char *raw_map);
+int		ft_invalid_elements(t_mlx *p);
 void	ft_map_elements_check(t_mlx *p);
 void	calculate_map_elements(t_mlx *p, char c);
 /* upload_sprites.c */
