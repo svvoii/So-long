@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   so_long.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svoi <svoi@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 11:24:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/07 10:36:43 by svoi             ###   ########.fr       */
+/*   Updated: 2023/05/07 17:24:16 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,10 +151,10 @@ void	ft_map_elements_check(t_mlx *p);
 void	calculate_map_elements(t_mlx *p, char c);
 /* upload_sprites.c */
 void	ft_load_textures(t_mlx *p);
-void	ft_load_player_frames(t_mlx *p);
-void	ft_load_coin_frames(t_mlx *p);
-void	ft_load_numbers(t_mlx *p);
+void	ft_load_frames(t_mlx *p);
+void	ft_load_frames_player(t_mlx *p);
 void	ft_load_you_win(t_mlx *p);
+void	ft_verify_mlx_image(t_mlx *p, void *arr[], int frames);
 /* free_and_exit.c */
 void	ft_free_and_destroy(t_mlx *p, int status, char *msg);
 void	ft_free_textures(t_mlx *p);

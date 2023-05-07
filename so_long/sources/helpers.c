@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helpers.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svoi <svoi@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 13:21:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/07 13:15:41 by svoi             ###   ########.fr       */
+/*   Updated: 2023/05/07 17:56:57 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,8 +87,6 @@ void	collectables_count(t_mlx *p)
 	c[1] = p->c_count % 10;
 	ft_put_sprite_to_buff(p->sp.num[c[0]], 32, (p->height - 1) * PIX, &p->bf);
 	ft_put_sprite_to_buff(p->sp.num[c[1]], 64, (p->height - 1) * PIX, &p->bf);
-	//ft_put_sprite_to_buff(p->sp.num[c[0]], (p->width - 3) * PIX, 0, &p->bf);
-	//ft_put_sprite_to_buff(p->sp.num[c[1]], (p->width - 2) * PIX, 0, &p->bf);
 }
 
 void	ft_collectables(t_mlx *p)
@@ -105,9 +103,13 @@ void	ft_collectables(t_mlx *p)
 	if (p->pix_map[y][x] == 'C' || p->pix_map[y][rt] == 'C'
 		|| p->pix_map[dn][x] == 'C' || p->pix_map[dn][rt] == 'C')
 	{
-		p->map[y / PIX][x / PIX] = '0';
-		p->map[y / PIX][rt / PIX] = '0';
-		p->map[dn / PIX][x / PIX] = '0';
-		p->map[dn / PIX][rt / PIX] = '0';
+		if (p->map[y / PIX][x / PIX] == 'C')
+			p->map[y / PIX][x / PIX] = '0';
+		else if (p->map[y / PIX][rt / PIX] == 'C')
+			p->map[y / PIX][rt / PIX] = '0';
+		else if (p->map[dn / PIX][x / PIX] == 'C')
+			p->map[dn / PIX][x / PIX] = '0';
+		else if (p->map[dn / PIX][rt / PIX] == 'C')
+			p->map[dn / PIX][rt / PIX] = '0';
 	}
 }

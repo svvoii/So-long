@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 13:21:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/05 14:00:32 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/07 17:44:04 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,14 @@ void	ft_init_map_and_window(t_mlx *p, char *str)
 	ft_make_pix_map(p);
 	ft_validating_map(p);
 	p->mlx = mlx_init();
+	if (!p->mlx)
+		ft_free_and_destroy(p, 1, "Error: mlx_init\n");
 	p->win = mlx_new_window(p->mlx, (PIX * p->width), (PIX * p->height), "");
+	if (!p->win)
+		ft_free_and_destroy(p, 1, "Error: mlx_new_window\n");
 	p->bf.img = mlx_new_image(p->mlx, (PIX * p->width), (PIX * p->height));
+	if (!p->bf.img)
+		ft_free_and_destroy(p, 1, "Error creating buffer image\n");
 	p->bf.addr = mlx_get_data_addr(
 			p->bf.img, &(p->bf.bpp), &(p->bf.line_len), &(p->bf.endian));
 	ft_load_textures(p);
@@ -85,13 +91,3 @@ void	ft_render_player(t_mlx *p)
 	ft_collectables(p);
 	frame = (frame + 1) % FRAMES;
 }
-
-/*
-void	ft_put_pix_to_img(t_image *img, int x, int y, int color)
-{
-	char	*pix;
-
-	pix = img->addr + (y * img->line_len) + (x * (img->bpp / 8));
-	*(int *)pix = color;
-}
-*/

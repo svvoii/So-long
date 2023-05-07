@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 13:21:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/04 17:37:30 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/07 17:43:09 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,21 @@ void	ft_init_map_and_window(t_mlx *p, char *str)
 {
 	p->mlx = NULL;
 	p->win = NULL;
+	p->bfs.visited = NULL;
+	p->bfs.queue_x = NULL;
+	p->bfs.queue_y = NULL;
 	ft_map_to_array(p, str);
 	ft_make_pix_map(p);
 	ft_validating_map(p);
 	p->mlx = mlx_init();
+	if (!p->mlx)
+		ft_free_and_destroy(p, 1, "Error: mlx_init\n");
 	p->win = mlx_new_window(p->mlx, (PIX * p->width), (PIX * p->height), "");
+	if (!p->win)
+		ft_free_and_destroy(p, 1, "Error: mlx_new_window\n");
 	p->bf.img = mlx_new_image(p->mlx, (PIX * p->width), (PIX * p->height));
+	if (!p->bf.img)
+		ft_free_and_destroy(p, 1, "Error creating buffer image\n");
 	p->bf.addr = mlx_get_data_addr(
 			p->bf.img, &(p->bf.bpp), &(p->bf.line_len), &(p->bf.endian));
 	ft_load_textures(p);

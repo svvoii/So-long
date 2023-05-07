@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_sprites.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svoi <svoi@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 13:21:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/07 12:51:36 by svoi             ###   ########.fr       */
+/*   Updated: 2023/05/07 17:25:49 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,5 +149,13 @@ void	ft_put_sprite_to_buff(void *sprite, int x, int y, t_image *bf)
 			ft_memcpy(bf->addr + pix_off, spr.img + spr_off, bf->bpp / 8);
 		}
 	}
+}
+
+void	ft_put_pix_to_img(t_image *img, int x, int y, int color)
+{
+	char	*pix;
+
+	pix = img->addr + (y * img->line_len) + (x * (img->bpp / 8));
+	*(int *)pix = color;
 }
 */

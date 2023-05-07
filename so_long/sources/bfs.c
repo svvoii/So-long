@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/26 11:37:29 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/04 21:18:02 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/07 17:50:38 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ int	ft_bfs(t_mlx *p)
 	p->bfs.rr = 0;
 	if (ft_malloc_bfs(p) == NULL)
 		ft_free_and_destroy(p, 1, "Error allocating memory for BFS.\n");
-		//ft_free_bfs(p, bfs, "Error allocating memory for BFS.\n");
 	p->bfs.visited[p->pos.cur_y][p->pos.cur_x] = 'v';
 	p->bfs.queue_x[p->bfs.rr] = p->pos.cur_x;
 	p->bfs.queue_y[p->bfs.rr] = p->pos.cur_y;
@@ -131,7 +130,6 @@ void	ft_free_bfs(t_mlx *p)
 		free(p->bfs.queue_y);
 	if (p->bfs.queue_x)
 		free(p->bfs.queue_x);
-	//ft_free_and_destroy(p, 1, str);
 }
 
 /*
