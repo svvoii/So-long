@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 13:21:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/07 17:56:57 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/07 19:30:53 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,8 @@ void	moves_count(t_mlx *p)
 void	collectables_count(t_mlx *p)
 {
 	int	c[2];
-	int y;
-	int x;
+	int	y;
+	int	x;
 
 	p->c_count = 0;
 	y = -1;

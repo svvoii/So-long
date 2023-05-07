@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 13:21:52 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/07 16:53:34 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/07 19:30:04 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	ft_destroy_img(t_mlx *p, void **img, int frames)
 
 	i = -1;
 	while (++i < frames)
-	 	if (img[i])
+		if (img[i])
 			mlx_destroy_image(p->mlx, img[i]);
 }
 

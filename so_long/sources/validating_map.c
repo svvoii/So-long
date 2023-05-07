@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   validating_map.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svoi <svoi@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:43:40 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/07 10:46:10 by svoi             ###   ########.fr       */
+/*   Updated: 2023/05/07 19:31:22 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ void	ft_validating_map(t_mlx *p)
 	calculate_map_elements(p, '0');
 	calculate_map_elements(p, 'P');
 	calculate_map_elements(p, 'E');
-	printf("coins:'%d', ground:'%d', exit:'%d'\n", p->c_count, p->ground, p->exit);
 	if (p->player != 1)
 		ft_free_and_destroy(p, 1, "Error: Single player required.\n");
 	if (p->exit != 1)
