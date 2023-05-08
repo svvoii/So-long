@@ -6,7 +6,7 @@
 /*   By: sbocanci <sbocanci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 15:43:40 by sbocanci          #+#    #+#             */
-/*   Updated: 2023/05/04 17:06:38 by sbocanci         ###   ########.fr       */
+/*   Updated: 2023/05/08 14:33:19 by sbocanci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	ft_map_to_array(t_mlx *p, char *file_path)
 
 	fd = open(file_path, O_RDONLY);
 	if (fd == -1)
-		return ;
+	 	ft_free_and_destroy(p, 1, "Error: invalid map file.\n");
 	p->raw = ft_copy_to_buf(fd);
 	close(fd);
 	p->pix_map = NULL;
