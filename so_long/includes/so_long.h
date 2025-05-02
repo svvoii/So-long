@@ -16,7 +16,7 @@
 # include <fcntl.h>
 # include <stdlib.h>
 # include "libft.h"
-# include "mlx/mlx.h"
+# include "mlx.h"
 
 # include <X11/X.h>
 # include <X11/keysym.h>

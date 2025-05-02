@@ -32,7 +32,7 @@ obj_b = $(src_b:.c=.o)
 flags = -Wall -Wextra -Werror -I/Users/serge/LINUX/GITHUB_TMP/So-long/so_long/includes -I/opt/X11/include # MACOS (change path to your `libmlx.a` and X11 !!!) X11 must be installed
 # flags = -Wall -Wextra -I/usr/local/include -I/opt/X11/include -Iincludes # MACOS (use this path if libmlx.a is in `/usr/local/include/libmlx.a` and change path to your X11 (if needed) !!!)
 
-Lmlx = -L/Users/serge/LINUX/GITHUB_TMP/So-long/so_long/includes/mlx/ -L/opt/X11/lib -lmlx -lXext -lX11 -lm
+Lmlx = -L/Users/serge/LINUX/GITHUB_TMP/So-long/so_long/includes -L/opt/X11/lib -lmlx -lXext -lX11 -lm
 # Lmlx = -L/usr/local/lib -lmlx -L/usr/X11/lib -lXext -lX11 -lm # LINUX
 # Lmlx = -L/mnt/nfs/homes/sbocanci/Documents/42cursus/So-long/so_long/includes/mlx/ -lmlx -lXext -lX11 # LINUX (42 dump)
 
