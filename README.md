@@ -8,7 +8,7 @@ The goal of the game is to guide the player character through a tile-based map, 
 
 ## Features
 
-🎮 Simple 2D Game Mechanics: Collect all items (C), reach the exit (E), and avoid walls (1) (See .ber files in `/maps/` dir)   
+🎮 Simple 2D Game Mechanics: Collect all items (C), reach the exit (E), and avoid walls (1) (See `.ber` files in `/maps/` dir)   
 🖼️ Real-Time Rendering: Uses MiniLibX to display graphics in a window   
 🎹 Keyboard Controls: Move the player using W/A/S/D keys   
 📄 Map Parsing: Loads and validates maps from .ber files   
@@ -43,8 +43,7 @@ The goal of the game is to guide the player character through a tile-based map, 
 ```
 so_long/
 │
-├── includes/           # Header files and MLX library
-│   └── mlx/            # MiniLibX (compiled libmlx.a and mlx.h) no need to have source repo here..
+├── includes/           # Header files and MLX library ..(includes compiled libmlx.a and mlx.h files)
 ├── src/                # Game logic and rendering
 ├── maps/               # Sample .ber map files
 ├── assets/             # Game textures and sprites (if applicable)
@@ -52,7 +51,7 @@ so_long/
 └── README.md           # Documentation
 ```
 
-*NOTE: The `mlx` folder contains the compiled MiniLibX library and its header file. No need to have the source repo here. The library is linked during compilation using the Makefile.*  
+*NOTE: The `so_long/includes/` folder contains the compiled MiniLibX library file `libmlx.a` and its header file `mlx.h`. No need to have the source repo here. The library is linked during compilation using the Makefile.*  
 If source repo is needed you can use this :  
 `git clone https://github.com/42Paris/minilibx-linux.git so_long/includes/mlx/`  
 
@@ -67,13 +66,15 @@ git clone https://github.com/svvoii/So-long.git
 cd so_long
 ```
 
-2. Make sure you have the MiniLibX library `libmlx.a` in the `includes/mlx/` directory and there is a correct path to it in the Makefile (line 32 and 36).
+2. Make sure you have the compiled MiniLibX library file `libmlx.a` in the `so_long/includes/` directory and there is a correct path to it in the Makefile (line 32 and 36).
+
+for MACOS:
 
 ```bash
 ..
 flags = -Wall -Wextra -Werror -I/PATH/TO/THIS/REPOSITORY/So-long/so_long/includes -I/opt/X11/include # MACOS (change path to your `libmlx.a` and X11 !!!) X11 must be installed
 
-Lmlx = -L/PATH/TO/THIS/REPO/So-long/so_long/includes/mlx/ -L/opt/X11/lib -lmlx -lXext -lX11 -lm
+Lmlx = -L/PATH/TO/THIS/REPO/So-long/so_long/includes -L/opt/X11/lib -lmlx -lXext -lX11 -lm
 # make sure to have the correct path to X11 library `-L/opt/X11/lib` ..)
 ..
 ```
@@ -83,14 +84,14 @@ for LINUX:
 ```bash
 Lmlx = -L/usr/local/lib -lmlx -L/usr/X11/lib -lXext -lX11 -lm # LINUX
 # or: 
-Lmlx = -L/mnt/nfs/homes/sbocanci/Documents/42cursus/So-long/so_long/includes/mlx/ -lmlx -lXext -lX11 # LINUX (42 dump)
+Lmlx = -L/mnt/nfs/homes/sbocanci/Documents/42cursus/So-long/so_long/includes -lmlx -lXext -lX11 # LINUX (42 dump)
 ```
 
 *NOTE: The `X11` library must be installed on the system. Go to [XQuartz](https://www.xquartz.org) to download.*  
 
 3. Compile the project:
 
-Once you have the correct path to the `libmlx.a` library and `X11`, you can compile the project : 
+Once you have the correct path to the `libmlx.a` library and `X11`, you can compile the project from `/So-long/so_long/` directory : 
 
 ```bash
 make
@@ -141,7 +142,7 @@ All maps must be rectangular, closed (surrounded by walls), and contain exactly 
 Make sure the MLX library path is correct in your Makefile:
 
 ```bash
-Lmlx = -L$(PWD)/includes/mlx -lmlx -lXext -lX11 -lbsd
+Lmlx = -L$(PWD)/includes -lmlx -lXext -lX11 -lbsd
 ```
 
 - Check if X11 is installed on your system :
