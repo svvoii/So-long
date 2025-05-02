@@ -13,10 +13,14 @@
 #ifndef SO_LONG_H
 # define SO_LONG_H
 
+# include <fcntl.h>
 # include <stdlib.h>
 # include "libft.h"
 # include "mlx/mlx.h"
-# include "mlx/mlx_int.h"
+
+# include <X11/X.h>
+# include <X11/keysym.h>
+
 
 # define PIX 32
 # define FRAMES 6

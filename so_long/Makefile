@@ -29,15 +29,18 @@ lib_obj = $(includes/libft:.c=.o)
 obj = $(src:.c=.o)
 obj_b = $(src_b:.c=.o)
 
-flags = -Wall -Wextra -Werror
+flags = -Wall -Wextra -Werror -I/Users/serge/LINUX/GITHUB_TMP/So-long/so_long/includes -I/opt/X11/include # MACOS (change path to your `libmlx.a` and X11 !!!) X11 must be installed
+# flags = -Wall -Wextra -I/usr/local/include -I/opt/X11/include -Iincludes # MACOS (use this path if libmlx.a is in `/usr/local/include/libmlx.a` and change path to your X11 (if needed) !!!)
 
-#Lmlx = -L/home/svoi/Documents/So-long/so_long/includes/mlx/ -lmlx -lXext -lX11
-Lmlx = -L/mnt/nfs/homes/sbocanci/Documents/42cursus/So-long/so_long/includes/mlx/ -lmlx -lXext -lX11
+Lmlx = -L/Users/serge/LINUX/GITHUB_TMP/So-long/so_long/includes/mlx/ -L/opt/X11/lib -lmlx -lXext -lX11 -lm
+# Lmlx = -L/usr/local/lib -lmlx -L/usr/X11/lib -lXext -lX11 -lm # LINUX
+# Lmlx = -L/mnt/nfs/homes/sbocanci/Documents/42cursus/So-long/so_long/includes/mlx/ -lmlx -lXext -lX11 # LINUX (42 dump)
 
 all: $(NAME)
 
 $(NAME): $(src) $(obj) $(lib_obj)
-	@gcc -g $(flags) $(src) $(libft) $(Lmlx) -o $(NAME)
+	@gcc -v $(flags) $(src) $(libft) $(Lmlx) -o $(NAME)
+# @gcc -g $(flags) $(src) $(libft) $(Lmlx) -o $(NAME)
 	@echo ------Compiled Mondatory part-------
 
 bonus: $(NAME_B)
@@ -46,7 +49,7 @@ $(NAME_B): $(src_b) $(obj_b) $(lib_obj)
 	@echo ------Compiled Bonus part-------
 
 %.o: %.c
-	@gcc -c $< -o $@
+	@gcc $(flags) -c $< -o $@
 	@echo ------Compiling Objects files-------
 
 clean:
